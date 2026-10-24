@@ -1,0 +1,68 @@
+@import "tailwindcss";
+@import "maplibre-gl/dist/maplibre-gl.css";
+
+@theme {
+  --color-ink-950: #061b22;
+  --color-ink-900: #0b2a34;
+  --color-ink-800: #113a47;
+  --color-ink-700: #1a4d5e;
+  --color-ink-100: #dfeaee;
+  --color-lagoon-600: #0c7c8a;
+  --color-lagoon-500: #139aa8;
+  --color-lagoon-100: #d5f0f3;
+  --color-sand-500: #c89b3c;
+  --color-sand-100: #f7eed8;
+  --color-band-low: #2f9e6b;
+  --color-band-moderate: #d9a521;
+  --color-band-high: #e2711d;
+  --color-band-severe: #b42318;
+  --font-sans: "Segoe UI", "Noto Sans Arabic", "Helvetica Neue", Arial, sans-serif;
+}
+
+html,
+body {
+  height: 100%;
+  background: #f3f6f7;
+  color: #0b2a34;
+}
+
+[dir="rtl"] .ltr-only {
+  direction: ltr;
+  unicode-bidi: isolate;
+}
+
+.card {
+  @apply rounded-xl border border-ink-100 bg-white shadow-sm;
+}
+
+.chip {
+  @apply inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-[11px] font-medium leading-4;
+}
+
+.btn,
+.btn-primary,
+.btn-secondary,
+.btn-danger {
+  @apply inline-flex items-center justify-center gap-1 rounded-lg px-3 py-1.5 text-sm font-medium transition disabled:cursor-not-allowed disabled:opacity-50;
+}
+.btn-primary {
+  @apply bg-lagoon-600 text-white hover:bg-lagoon-500;
+}
+.btn-secondary {
+  @apply border border-ink-100 bg-white text-ink-900 hover:bg-ink-100/60;
+}
+.btn-danger {
+  @apply bg-band-severe text-white hover:opacity-90;
+}
+
+.label {
+  @apply text-[11px] font-semibold uppercase tracking-wide text-ink-700/70;
+}
+
+input[type="range"] {
+  accent-color: #0c7c8a;
+}
+
+.maplibregl-ctrl-attrib {
+  font-size: 10px;
+}

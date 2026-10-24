@@ -1,0 +1,123 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="620" viewBox="0 0 1400 620" font-family="Segoe UI, Inter, Arial, sans-serif" role="img" aria-label="RainReady UAE guardrail layers from untrusted input to simulated execution">
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0 0L10 5L0 10z" fill="#334155"/>
+    </marker>
+  </defs>
+  <rect width="1400" height="620" fill="#f8fafc"/>
+  <text x="40" y="48" font-size="28" font-weight="600" fill="#0f172a">Guardrails in code &#8212; every layer an action must pass</text>
+  <text x="40" y="74" font-size="15" fill="#475569">Each layer is enforced server-side and covered by a test in api/tests. Scores from guard models can add review flags; they never grant permission.</text>
+
+  <g font-size="12.5" fill="#1e293b">
+    <!-- L1 -->
+    <rect x="40" y="110" width="178" height="300" rx="14" fill="#fff1f2" stroke="#fecdd3"/>
+    <text x="129" y="140" text-anchor="middle" font-size="15" font-weight="600" fill="#9f1239">Input</text>
+    <text x="129" y="166" text-anchor="middle">Instruction / observation</text>
+    <text x="129" y="184" text-anchor="middle">separation</text>
+    <text x="129" y="210" text-anchor="middle">Casualty mentions kept</text>
+    <text x="129" y="228" text-anchor="middle">&#8594; urgent review</text>
+    <text x="129" y="254" text-anchor="middle">Upload checks: size,</text>
+    <text x="129" y="272" text-anchor="middle">MIME, CRS, grid, units,</text>
+    <text x="129" y="290" text-anchor="middle">nodata, orbit</text>
+    <text x="129" y="316" text-anchor="middle">Replay: available_at &#8804;</text>
+    <text x="129" y="334" text-anchor="middle">decision time</text>
+    <text x="129" y="392" text-anchor="middle" font-size="11" fill="#9f1239">test_prompt_injection...</text>
+
+    <!-- L2 -->
+    <rect x="236" y="110" width="178" height="300" rx="14" fill="#fff7ed" stroke="#fed7aa"/>
+    <text x="325" y="140" text-anchor="middle" font-size="15" font-weight="600" fill="#9a3412">Identity</text>
+    <text x="325" y="166" text-anchor="middle">Signed HttpOnly cookie</text>
+    <text x="325" y="184" text-anchor="middle">(server secret)</text>
+    <text x="325" y="210" text-anchor="middle">Role looked up</text>
+    <text x="325" y="228" text-anchor="middle">server-side</text>
+    <text x="325" y="254" text-anchor="middle">Client-supplied role</text>
+    <text x="325" y="272" text-anchor="middle">is ignored</text>
+    <text x="325" y="298" text-anchor="middle">Demo switcher only</text>
+    <text x="325" y="316" text-anchor="middle">with DEMO_AUTH</text>
+    <text x="325" y="392" text-anchor="middle" font-size="11" fill="#9a3412">test_unauthorized_roles...</text>
+
+    <!-- L3 -->
+    <rect x="432" y="110" width="178" height="300" rx="14" fill="#fefce8" stroke="#fde68a"/>
+    <text x="521" y="140" text-anchor="middle" font-size="15" font-weight="600" fill="#713f12">Agents</text>
+    <text x="521" y="166" text-anchor="middle">Per-persona tool</text>
+    <text x="521" y="184" text-anchor="middle">allowlist</text>
+    <text x="521" y="210" text-anchor="middle">Pydantic argument</text>
+    <text x="521" y="228" text-anchor="middle">validation &#183; UAE bounds</text>
+    <text x="521" y="254" text-anchor="middle">Call / token / time</text>
+    <text x="521" y="272" text-anchor="middle">budgets</text>
+    <text x="521" y="298" text-anchor="middle">Read-only tools; no</text>
+    <text x="521" y="316" text-anchor="middle">shell, SQL or free HTTP</text>
+    <text x="521" y="342" text-anchor="middle">SOP retrieval filtered</text>
+    <text x="521" y="360" text-anchor="middle">by role, cited</text>
+    <text x="521" y="392" text-anchor="middle" font-size="11" fill="#713f12">test_tool_allowlist_enforced</text>
+
+    <!-- L4 -->
+    <rect x="628" y="110" width="178" height="300" rx="14" fill="#ecfdf5" stroke="#a7f3d0"/>
+    <text x="717" y="140" text-anchor="middle" font-size="15" font-weight="600" fill="#065f46">Providers</text>
+    <text x="717" y="166" text-anchor="middle">Base URL must match</text>
+    <text x="717" y="184" text-anchor="middle">PROVIDER_ALLOWLIST</text>
+    <text x="717" y="210" text-anchor="middle">Sovereign mode rejects</text>
+    <text x="717" y="228" text-anchor="middle">non-local hosts</text>
+    <text x="717" y="254" text-anchor="middle">No fallback between</text>
+    <text x="717" y="272" text-anchor="middle">providers, ever</text>
+    <text x="717" y="298" text-anchor="middle">Outage &#8594; visible failure</text>
+    <text x="717" y="316" text-anchor="middle">&#8594; urgent human review</text>
+    <text x="717" y="342" text-anchor="middle">Guard outage blocks</text>
+    <text x="717" y="360" text-anchor="middle">publication, not intake</text>
+    <text x="717" y="392" text-anchor="middle" font-size="11" fill="#065f46">test_model_outage_without...</text>
+
+    <!-- L5 -->
+    <rect x="824" y="110" width="178" height="300" rx="14" fill="#eff6ff" stroke="#bfdbfe"/>
+    <text x="913" y="140" text-anchor="middle" font-size="15" font-weight="600" fill="#1e3a8a">Policy</text>
+    <text x="913" y="166" text-anchor="middle">Deterministic engine:</text>
+    <text x="913" y="184" text-anchor="middle">authority per action kind</text>
+    <text x="913" y="210" text-anchor="middle">Duplicate suppression</text>
+    <text x="913" y="228" text-anchor="middle">against live work orders</text>
+    <text x="913" y="254" text-anchor="middle">Emergency stop blocks</text>
+    <text x="913" y="272" text-anchor="middle">privileged actions only</text>
+    <text x="913" y="298" text-anchor="middle">Evidence loops capped</text>
+    <text x="913" y="316" text-anchor="middle">at 2</text>
+    <text x="913" y="392" text-anchor="middle" font-size="11" fill="#1e3a8a">test_emergency_stop...</text>
+
+    <!-- L6 -->
+    <rect x="1020" y="110" width="178" height="300" rx="14" fill="#f5f3ff" stroke="#ddd6fe"/>
+    <text x="1109" y="140" text-anchor="middle" font-size="15" font-weight="600" fill="#4c1d95">Approval</text>
+    <text x="1109" y="166" text-anchor="middle">Interrupt-only node</text>
+    <text x="1109" y="192" text-anchor="middle">Bound to incident version,</text>
+    <text x="1109" y="210" text-anchor="middle">proposal version, payload</text>
+    <text x="1109" y="228" text-anchor="middle">hash, tools, destinations,</text>
+    <text x="1109" y="246" text-anchor="middle">approver, expiry</text>
+    <text x="1109" y="272" text-anchor="middle">Edit &#8658; new version &#8658;</text>
+    <text x="1109" y="290" text-anchor="middle">old approval invalid</text>
+    <text x="1109" y="316" text-anchor="middle">Idempotency-Key unique</text>
+    <text x="1109" y="334" text-anchor="middle">survives restart</text>
+    <text x="1109" y="392" text-anchor="middle" font-size="11" fill="#4c1d95">test_edit_after_approval...</text>
+
+    <!-- L7 -->
+    <rect x="1216" y="110" width="144" height="300" rx="14" fill="#f1f5f9" stroke="#cbd5e1"/>
+    <text x="1288" y="140" text-anchor="middle" font-size="15" font-weight="600" fill="#0f172a">Execution</text>
+    <text x="1288" y="166" text-anchor="middle">Gateway re-checks</text>
+    <text x="1288" y="184" text-anchor="middle">policy + binding</text>
+    <text x="1288" y="210" text-anchor="middle">Simulated receipt</text>
+    <text x="1288" y="228" text-anchor="middle">labelled is_simulated</text>
+    <text x="1288" y="254" text-anchor="middle">Ack &#8800; effect</text>
+    <text x="1288" y="280" text-anchor="middle">Hash-linked audit</text>
+    <text x="1288" y="298" text-anchor="middle">(tamper-evident)</text>
+    <text x="1288" y="324" text-anchor="middle">Redacted payloads</text>
+    <text x="1288" y="392" text-anchor="middle" font-size="11" fill="#0f172a">test_stale_approval...</text>
+  </g>
+
+  <g stroke="#334155" stroke-width="2.5" fill="none" marker-end="url(#a)">
+    <path d="M220 260 L234 260"/><path d="M416 260 L430 260"/><path d="M612 260 L626 260"/>
+    <path d="M808 260 L822 260"/><path d="M1004 260 L1018 260"/><path d="M1200 260 L1214 260"/>
+  </g>
+
+  <rect x="40" y="440" width="1320" height="120" rx="14" fill="#0f172a"/>
+  <g font-size="13" fill="#e2e8f0">
+    <text x="64" y="470" font-weight="600" fill="#f8fafc">What a blocked action looks like in the UI</text>
+    <text x="64" y="496">Observer clicks Approve &#8594; 403 from the server, policy decision shown &#183; Report containing "dispatch crews now" &#8594; quarantined box, security event, no proposal</text>
+    <text x="64" y="518">Approval past expiry or proposal revised &#8594; "execution blocked", nothing dispatched &#183; Guard adapter down &#8594; publication blocked, monitoring continues</text>
+    <text x="64" y="546" fill="#94a3b8">Not claimed: tamper-proof storage, production IdP, antivirus on uploads, exercised guard models. See docs/THREAT_MODEL.md for residual risks.</text>
+  </g>
+  <text x="1360" y="600" text-anchor="end" font-size="11" fill="#94a3b8">docs/infographics/guardrails.svg</text>
+</svg>

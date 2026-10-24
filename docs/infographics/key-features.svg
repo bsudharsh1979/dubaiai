@@ -1,0 +1,112 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="900" viewBox="0 0 1400 900" font-family="Segoe UI, Inter, Arial, sans-serif" role="img" aria-label="RainReady UAE key features infographic: nine feature cards plus verification facts">
+  <rect width="1400" height="900" fill="#0f172a"/>
+
+  <text x="60" y="64" font-size="34" font-weight="600" fill="#f8fafc">RainReady UAE</text>
+  <text x="60" y="96" font-size="18" fill="#94a3b8">Sovereign Water &amp; HSE Command &#8212; key features of the prototype</text>
+  <rect x="1040" y="44" width="300" height="34" rx="17" fill="#1e293b" stroke="#334155"/>
+  <text x="1190" y="67" text-anchor="middle" font-size="13" fill="#cbd5e1">prototype &#183; synthetic data &#183; simulated connectors</text>
+
+  <g font-size="13.5" fill="#cbd5e1">
+    <!-- Row 1 -->
+    <g>
+      <rect x="60" y="130" width="400" height="200" rx="16" fill="#1e293b" stroke="#334155"/>
+      <circle cx="96" cy="166" r="18" fill="#0ea5e9"/><text x="96" y="171" text-anchor="middle" font-size="15" font-weight="700" fill="#082f49">1</text>
+      <text x="126" y="172" font-size="17" font-weight="600" fill="#f8fafc">Six labels, never merged</text>
+      <text x="80" y="206">observed water &#183; susceptibility &#183; forecast risk</text>
+      <text x="80" y="226">anomaly &#183; suspected incident &#183; confirmed incident</text>
+      <text x="80" y="256" fill="#7dd3fc">Each with its own provenance. A SAR mask is</text>
+      <text x="80" y="276" fill="#7dd3fc">"candidate inundation at acquisition time", not "flood".</text>
+      <text x="80" y="306" font-size="12" fill="#64748b">Ordinal bands only &#8212; no uncalibrated probabilities</text>
+    </g>
+    <g>
+      <rect x="500" y="130" width="400" height="200" rx="16" fill="#1e293b" stroke="#334155"/>
+      <circle cx="536" cy="166" r="18" fill="#34d399"/><text x="536" y="171" text-anchor="middle" font-size="15" font-weight="700" fill="#022c22">2</text>
+      <text x="566" y="172" font-size="17" font-weight="600" fill="#f8fafc">Versioned hazard tools</text>
+      <text x="520" y="206">Water-balance twin with mass-balance assertion;</text>
+      <text x="520" y="226">flash-flood vs waterlogging mechanisms.</text>
+      <text x="520" y="246">SAR change screen &#183; residual leak screen</text>
+      <text x="520" y="266">asset exposure &#183; constrained router</text>
+      <text x="520" y="306" font-size="12" fill="#64748b">Numbers come only from tools, never from the planner</text>
+    </g>
+    <g>
+      <rect x="940" y="130" width="400" height="200" rx="16" fill="#1e293b" stroke="#334155"/>
+      <circle cx="976" cy="166" r="18" fill="#a78bfa"/><text x="976" y="171" text-anchor="middle" font-size="15" font-weight="700" fill="#2e1065">3</text>
+      <text x="1006" y="172" font-size="17" font-weight="600" fill="#f8fafc">Eight bounded personas</text>
+      <text x="960" y="206">Observer &#183; Hydrologist &#183; Utility Engineer &#183; HSE Officer</text>
+      <text x="960" y="226">Response Planner &#183; Comms &#183; Assurance &#183; Coordinator</text>
+      <text x="960" y="256" fill="#c4b5fd">Typed outputs, tool allowlists, call/time budgets,</text>
+      <text x="960" y="276" fill="#c4b5fd">max 2 evidence loops &#8594; urgent human review.</text>
+      <text x="960" y="306" font-size="12" fill="#64748b">LangGraph state graph &#183; structured summaries, no chain-of-thought</text>
+    </g>
+
+    <!-- Row 2 -->
+    <g>
+      <rect x="60" y="370" width="400" height="200" rx="16" fill="#1e293b" stroke="#334155"/>
+      <circle cx="96" cy="406" r="18" fill="#f87171"/><text x="96" y="411" text-anchor="middle" font-size="15" font-weight="700" fill="#450a0a">4</text>
+      <text x="126" y="412" font-size="17" font-weight="600" fill="#f8fafc">Human approval, hash-bound</text>
+      <text x="80" y="446">Interrupt-only gate. Approval binds incident version,</text>
+      <text x="80" y="466">proposal version, payload hash, tools, destinations,</text>
+      <text x="80" y="486">approver identity and expiry.</text>
+      <text x="80" y="516" fill="#fca5a5">Any edit invalidates it. Re-checked at execution.</text>
+      <text x="80" y="546" font-size="12" fill="#64748b">Roles from the signed server session only</text>
+    </g>
+    <g>
+      <rect x="500" y="370" width="400" height="200" rx="16" fill="#1e293b" stroke="#334155"/>
+      <circle cx="536" cy="406" r="18" fill="#fbbf24"/><text x="536" y="411" text-anchor="middle" font-size="15" font-weight="700" fill="#451a03">5</text>
+      <text x="566" y="412" font-size="17" font-weight="600" fill="#f8fafc">Ack &#8800; action</text>
+      <text x="520" y="446">Simulated dispatch returns a receipt. Acknowledgement</text>
+      <text x="520" y="466">changes nothing physical; only completion applies an</text>
+      <text x="520" y="486">effect and triggers reassessment.</text>
+      <text x="520" y="516" fill="#fde68a">Closure needs a new observation + authorized review.</text>
+      <text x="520" y="546" font-size="12" fill="#64748b">No valve, power or evacuation endpoint exists</text>
+    </g>
+    <g>
+      <rect x="940" y="370" width="400" height="200" rx="16" fill="#1e293b" stroke="#334155"/>
+      <circle cx="976" cy="406" r="18" fill="#fb923c"/><text x="976" y="411" text-anchor="middle" font-size="15" font-weight="700" fill="#431407">6</text>
+      <text x="1006" y="412" font-size="17" font-weight="600" fill="#f8fafc">Untrusted text is data</text>
+      <text x="960" y="446">Field reports pass a guard gate: imperative</text>
+      <text x="960" y="466">instructions are quarantined, observations kept,</text>
+      <text x="960" y="486">casualty mentions preserved and escalated.</text>
+      <text x="960" y="516" fill="#fdba74">Scenario D: "dispatch crews now" never becomes an action.</text>
+      <text x="960" y="546" font-size="12" fill="#64748b">Optional Content Safety / JailbreakDetect adapters (not exercised)</text>
+    </g>
+
+    <!-- Row 3 -->
+    <g>
+      <rect x="60" y="610" width="400" height="200" rx="16" fill="#1e293b" stroke="#334155"/>
+      <circle cx="96" cy="646" r="18" fill="#2dd4bf"/><text x="96" y="651" text-anchor="middle" font-size="15" font-weight="700" fill="#042f2e">7</text>
+      <text x="126" y="652" font-size="17" font-weight="600" fill="#f8fafc">What-if digital twin</text>
+      <text x="80" y="686">Rain multiplier &#183; drain blockage &#183; pump availability</text>
+      <text x="80" y="706">mobile pump &#183; sensor outage &#183; report reliability.</text>
+      <text x="80" y="736" fill="#99f6e4">Baseline vs intervention at +30 / +60 / +180 min</text>
+      <text x="80" y="756" fill="#99f6e4">(simulation horizons, not forecasts).</text>
+      <text x="80" y="786" font-size="12" fill="#64748b">Labelled "scenario model &#8212; uncalibrated"</text>
+    </g>
+    <g>
+      <rect x="500" y="610" width="400" height="200" rx="16" fill="#1e293b" stroke="#334155"/>
+      <circle cx="536" cy="646" r="18" fill="#e879f9"/><text x="536" y="651" text-anchor="middle" font-size="15" font-weight="700" fill="#4a044e">8</text>
+      <text x="566" y="652" font-size="17" font-weight="600" fill="#f8fafc">Sovereign by configuration</text>
+      <text x="520" y="686">Provider allowlist &#183; no cloud fallback &#183; server-only</text>
+      <text x="520" y="706">secrets &#183; local basemap, no external tiles or CDN.</text>
+      <text x="520" y="736" fill="#f0abfc">demo &#8594; local_nim &#8594; approved_hosted, never silent.</text>
+      <text x="520" y="756" fill="#f0abfc">/v1/models discovery, exact id match, validated output.</text>
+      <text x="520" y="786" font-size="12" fill="#64748b">Real inference not yet exercised (credential rejected, 401)</text>
+    </g>
+    <g>
+      <rect x="940" y="610" width="400" height="200" rx="16" fill="#1e293b" stroke="#334155"/>
+      <circle cx="976" cy="646" r="18" fill="#94a3b8"/><text x="976" y="651" text-anchor="middle" font-size="15" font-weight="700" fill="#0f172a">9</text>
+      <text x="1006" y="652" font-size="17" font-weight="600" fill="#f8fafc">Assurance built in</text>
+      <text x="960" y="686">Hash-linked audit chain (tamper-evident, not</text>
+      <text x="960" y="706">tamper-proof) &#183; emergency stop &#183; guard-outage rules</text>
+      <text x="960" y="726">&#183; redacted logs &#183; provider status per adapter.</text>
+      <text x="960" y="756" fill="#cbd5e1">Evaluation harness says "not evaluated" without labels.</text>
+      <text x="960" y="786" font-size="12" fill="#64748b">EN + Arabic RTL &#183; six views &#183; works offline</text>
+    </g>
+  </g>
+
+  <g font-size="13" fill="#94a3b8">
+    <text x="60" y="852">Verified: 27 API tests &#183; 3 browser smoke tests (local + hosted) &#183; deployed on Modal (single container, SQLite on volume)</text>
+    <text x="60" y="874">Not claimed: lives saved, losses avoided, accuracy, agency endorsement, exercised model inference.</text>
+    <text x="1340" y="874" text-anchor="end" font-size="11" fill="#475569">docs/infographics/key-features.svg</text>
+  </g>
+</svg>

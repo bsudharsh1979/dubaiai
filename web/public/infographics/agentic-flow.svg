@@ -1,0 +1,166 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="860" viewBox="0 0 1400 860" font-family="Segoe UI, Inter, Arial, sans-serif" role="img" aria-label="RainReady UAE agentic AI flow: signals, perception tools, eight personas, policy engine, human approval, simulated departments, feedback loop">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0 0L10 5L0 10z" fill="#0f766e"/>
+    </marker>
+    <marker id="arrowRed" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0 0L10 5L0 10z" fill="#b91c1c"/>
+    </marker>
+    <marker id="arrowGrey" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0 0L10 5L0 10z" fill="#64748b"/>
+    </marker>
+  </defs>
+
+  <rect width="1400" height="860" fill="#f8fafc"/>
+
+  <text x="40" y="48" font-size="28" font-weight="600" fill="#0f172a">RainReady UAE &#8212; what the agentic system actually does</text>
+  <text x="40" y="76" font-size="15" fill="#475569">Signals &#8594; Brain 1 (perception &amp; hazard tools) &#8594; Brain 2 (agent coordination, knowledge, access control) &#8594; Departments &#8594; Acknowledgements, observations &amp; reassessment</text>
+
+  <!-- Column 1: Signals -->
+  <g>
+    <rect x="40" y="110" width="220" height="430" rx="14" fill="#ffffff" stroke="#cbd5e1"/>
+    <text x="150" y="140" text-anchor="middle" font-size="16" font-weight="600" fill="#0f172a">1 &#183; Signals</text>
+    <text x="150" y="160" text-anchor="middle" font-size="12" fill="#64748b">provenance on every record</text>
+    <g font-size="13" fill="#1e293b">
+      <rect x="58" y="178" width="184" height="40" rx="8" fill="#e0f2fe"/><text x="150" y="203" text-anchor="middle">Rain gauges &#183; water levels</text>
+      <rect x="58" y="226" width="184" height="40" rx="8" fill="#e0f2fe"/><text x="150" y="251" text-anchor="middle">Nowcast forecasts</text>
+      <rect x="58" y="274" width="184" height="40" rx="8" fill="#e0f2fe"/><text x="150" y="299" text-anchor="middle">Sentinel-1 SAR before/after</text>
+      <rect x="58" y="322" width="184" height="40" rx="8" fill="#e0f2fe"/><text x="150" y="347" text-anchor="middle">Utility flow &amp; pressure</text>
+      <rect x="58" y="370" width="184" height="40" rx="8" fill="#fee2e2"/><text x="150" y="395" text-anchor="middle">Field reports (untrusted text)</text>
+      <rect x="58" y="418" width="184" height="40" rx="8" fill="#e0f2fe"/><text x="150" y="443" text-anchor="middle">Asset &amp; road register</text>
+    </g>
+    <text x="150" y="490" text-anchor="middle" font-size="12" fill="#64748b">observed_at &#183; available_at &#183; CRS</text>
+    <text x="150" y="508" text-anchor="middle" font-size="12" fill="#64748b">units &#183; quality flags &#183; licence</text>
+    <text x="150" y="526" text-anchor="middle" font-size="12" fill="#b45309">all synthetic in this build</text>
+  </g>
+
+  <!-- Column 2: Brain 1 tools -->
+  <g>
+    <rect x="300" y="110" width="250" height="430" rx="14" fill="#ffffff" stroke="#cbd5e1"/>
+    <text x="425" y="140" text-anchor="middle" font-size="16" font-weight="600" fill="#0f172a">2 &#183; Brain 1 &#8212; hazard tools</text>
+    <text x="425" y="160" text-anchor="middle" font-size="12" fill="#64748b">versioned &#183; deterministic &#183; the only source of numbers</text>
+    <g font-size="12.5" fill="#1e293b">
+      <rect x="318" y="178" width="214" height="52" rx="8" fill="#ecfdf5" stroke="#a7f3d0"/>
+      <text x="425" y="198" text-anchor="middle" font-weight="600">water_balance_twin/0.3.0</text>
+      <text x="425" y="216" text-anchor="middle" fill="#475569">mass balance &#183; flash flood vs waterlogging</text>
+      <rect x="318" y="238" width="214" height="52" rx="8" fill="#ecfdf5" stroke="#a7f3d0"/>
+      <text x="425" y="258" text-anchor="middle" font-weight="600">sar_change_screen/0.2.0</text>
+      <text x="425" y="276" text-anchor="middle" fill="#475569">candidate inundation at acquisition time</text>
+      <rect x="318" y="298" width="214" height="52" rx="8" fill="#ecfdf5" stroke="#a7f3d0"/>
+      <text x="425" y="318" text-anchor="middle" font-weight="600">pressure_flow_residual/0.2.0</text>
+      <text x="425" y="336" text-anchor="middle" fill="#475569">leak vs flushing vs meter fault</text>
+      <rect x="318" y="358" width="214" height="52" rx="8" fill="#ecfdf5" stroke="#a7f3d0"/>
+      <text x="425" y="378" text-anchor="middle" font-weight="600">asset_exposure/0.2.0</text>
+      <text x="425" y="396" text-anchor="middle" fill="#475569">hazard polygon &#215; critical assets</text>
+      <rect x="318" y="418" width="214" height="52" rx="8" fill="#ecfdf5" stroke="#a7f3d0"/>
+      <text x="425" y="438" text-anchor="middle" font-weight="600">constrained_router/0.2.0</text>
+      <text x="425" y="456" text-anchor="middle" fill="#475569">candidate route &#8212; requires verification</text>
+    </g>
+    <text x="425" y="500" text-anchor="middle" font-size="12" fill="#b45309">labelled "scenario model &#8212; uncalibrated"</text>
+    <text x="425" y="518" text-anchor="middle" font-size="12" fill="#64748b">ordinal bands &#183; no probabilities</text>
+  </g>
+
+  <!-- Column 3: Brain 2 personas -->
+  <g>
+    <rect x="590" y="110" width="330" height="430" rx="14" fill="#ffffff" stroke="#cbd5e1"/>
+    <text x="755" y="140" text-anchor="middle" font-size="16" font-weight="600" fill="#0f172a">3 &#183; Brain 2 &#8212; eight personas (LangGraph)</text>
+    <text x="755" y="160" text-anchor="middle" font-size="12" fill="#64748b">typed I/O &#183; tool allowlist &#183; budgets &#183; structured summaries</text>
+    <g font-size="12.5" fill="#1e293b">
+      <rect x="608" y="178" width="140" height="44" rx="8" fill="#eef2ff" stroke="#c7d2fe"/><text x="678" y="196" text-anchor="middle" font-weight="600">Observer</text><text x="678" y="212" text-anchor="middle" fill="#475569">validates feeds</text>
+      <rect x="754" y="178" width="148" height="44" rx="8" fill="#eef2ff" stroke="#c7d2fe"/><text x="828" y="196" text-anchor="middle" font-weight="600">Hydrologist</text><text x="828" y="212" text-anchor="middle" fill="#475569">runs the twin</text>
+      <rect x="608" y="230" width="140" height="44" rx="8" fill="#eef2ff" stroke="#c7d2fe"/><text x="678" y="248" text-anchor="middle" font-weight="600">Utility Engineer</text><text x="678" y="264" text-anchor="middle" fill="#475569">residual screen</text>
+      <rect x="754" y="230" width="148" height="44" rx="8" fill="#eef2ff" stroke="#c7d2fe"/><text x="828" y="248" text-anchor="middle" font-weight="600">HSE Officer</text><text x="828" y="264" text-anchor="middle" fill="#475569">consequence band</text>
+      <rect x="608" y="282" width="140" height="44" rx="8" fill="#eef2ff" stroke="#c7d2fe"/><text x="678" y="300" text-anchor="middle" font-weight="600">Response Planner</text><text x="678" y="316" text-anchor="middle" fill="#475569">proposes actions</text>
+      <rect x="754" y="282" width="148" height="44" rx="8" fill="#eef2ff" stroke="#c7d2fe"/><text x="828" y="300" text-anchor="middle" font-weight="600">Comms Officer</text><text x="828" y="316" text-anchor="middle" fill="#475569">EN/AR advisory draft</text>
+      <rect x="608" y="334" width="140" height="44" rx="8" fill="#eef2ff" stroke="#c7d2fe"/><text x="678" y="352" text-anchor="middle" font-weight="600">Assurance Officer</text><text x="678" y="368" text-anchor="middle" fill="#475569">policy &amp; SOP check</text>
+      <rect x="754" y="334" width="148" height="44" rx="8" fill="#eef2ff" stroke="#c7d2fe"/><text x="828" y="352" text-anchor="middle" font-weight="600">Incident Coordinator</text><text x="828" y="368" text-anchor="middle" fill="#475569">routes the graph</text>
+    </g>
+    <rect x="608" y="392" width="294" height="60" rx="8" fill="#fff7ed" stroke="#fed7aa"/>
+    <text x="755" y="412" text-anchor="middle" font-size="12.5" font-weight="600" fill="#9a3412">Evidence loop &#8804; 2, then urgent human review</text>
+    <text x="755" y="430" text-anchor="middle" font-size="12" fill="#7c2d12">stale scene &#183; flagged sensor &#183; disputed report &#8594; request more</text>
+    <text x="755" y="446" text-anchor="middle" font-size="12" fill="#7c2d12">provider failure &#8594; visible, no fallback</text>
+    <rect x="608" y="462" width="294" height="60" rx="8" fill="#f1f5f9" stroke="#cbd5e1"/>
+    <text x="755" y="482" text-anchor="middle" font-size="12.5" font-weight="600" fill="#0f172a">Knowledge: demo SOPs with citations</text>
+    <text x="755" y="500" text-anchor="middle" font-size="12" fill="#475569">role filter before retrieval &#183; doc id / version / section</text>
+    <text x="755" y="516" text-anchor="middle" font-size="12" fill="#475569">one shared text provider: demo &#183; local_nim &#183; approved_hosted</text>
+  </g>
+
+  <!-- Column 4: Policy + Human -->
+  <g>
+    <rect x="960" y="110" width="200" height="430" rx="14" fill="#ffffff" stroke="#cbd5e1"/>
+    <text x="1060" y="140" text-anchor="middle" font-size="16" font-weight="600" fill="#0f172a">4 &#183; Authority</text>
+    <text x="1060" y="160" text-anchor="middle" font-size="12" fill="#64748b">deterministic, server-side</text>
+    <rect x="978" y="178" width="164" height="110" rx="8" fill="#fef9c3" stroke="#fde68a"/>
+    <text x="1060" y="200" text-anchor="middle" font-size="13" font-weight="600" fill="#713f12">Policy engine</text>
+    <text x="1060" y="220" text-anchor="middle" font-size="12" fill="#713f12">who may approve what</text>
+    <text x="1060" y="238" text-anchor="middle" font-size="12" fill="#713f12">duplicate suppression</text>
+    <text x="1060" y="256" text-anchor="middle" font-size="12" fill="#713f12">emergency stop</text>
+    <text x="1060" y="274" text-anchor="middle" font-size="12" fill="#713f12">guard-outage rules</text>
+    <rect x="978" y="300" width="164" height="130" rx="8" fill="#fee2e2" stroke="#fecaca"/>
+    <text x="1060" y="322" text-anchor="middle" font-size="13" font-weight="600" fill="#7f1d1d">Human approval</text>
+    <text x="1060" y="342" text-anchor="middle" font-size="12" fill="#7f1d1d">LangGraph interrupt()</text>
+    <text x="1060" y="360" text-anchor="middle" font-size="12" fill="#7f1d1d">bound to incident version,</text>
+    <text x="1060" y="376" text-anchor="middle" font-size="12" fill="#7f1d1d">payload hash, tools,</text>
+    <text x="1060" y="392" text-anchor="middle" font-size="12" fill="#7f1d1d">destinations, approver, expiry</text>
+    <text x="1060" y="412" text-anchor="middle" font-size="12" font-weight="600" fill="#7f1d1d">edit &#8658; approval void</text>
+    <rect x="978" y="442" width="164" height="80" rx="8" fill="#f1f5f9" stroke="#cbd5e1"/>
+    <text x="1060" y="464" text-anchor="middle" font-size="13" font-weight="600" fill="#0f172a">Gateway</text>
+    <text x="1060" y="482" text-anchor="middle" font-size="12" fill="#475569">re-checks at execution</text>
+    <text x="1060" y="498" text-anchor="middle" font-size="12" fill="#475569">idempotency keys</text>
+    <text x="1060" y="514" text-anchor="middle" font-size="12" fill="#475569">hash-linked audit</text>
+  </g>
+
+  <!-- Column 5: Departments -->
+  <g>
+    <rect x="1200" y="110" width="160" height="430" rx="14" fill="#ffffff" stroke="#cbd5e1"/>
+    <text x="1280" y="140" text-anchor="middle" font-size="16" font-weight="600" fill="#0f172a">5 &#183; Departments</text>
+    <text x="1280" y="160" text-anchor="middle" font-size="12" fill="#64748b">simulated receipts</text>
+    <g font-size="12.5" fill="#1e293b">
+      <rect x="1216" y="178" width="128" height="40" rx="8" fill="#f1f5f9"/><text x="1280" y="203" text-anchor="middle">Drainage crews</text>
+      <rect x="1216" y="226" width="128" height="40" rx="8" fill="#f1f5f9"/><text x="1280" y="251" text-anchor="middle">Transport control</text>
+      <rect x="1216" y="274" width="128" height="40" rx="8" fill="#f1f5f9"/><text x="1280" y="299" text-anchor="middle">Utility field team</text>
+      <rect x="1216" y="322" width="128" height="40" rx="8" fill="#f1f5f9"/><text x="1280" y="347" text-anchor="middle">HSE / worksites</text>
+      <rect x="1216" y="370" width="128" height="40" rx="8" fill="#f1f5f9"/><text x="1280" y="395" text-anchor="middle">Public advisory</text>
+    </g>
+    <text x="1280" y="440" text-anchor="middle" font-size="12" font-weight="600" fill="#b91c1c">No valve, power or</text>
+    <text x="1280" y="456" text-anchor="middle" font-size="12" font-weight="600" fill="#b91c1c">evacuation endpoint</text>
+    <text x="1280" y="472" text-anchor="middle" font-size="12" font-weight="600" fill="#b91c1c">exists in this code</text>
+    <text x="1280" y="500" text-anchor="middle" font-size="12" fill="#475569">ack &#8800; completion</text>
+    <text x="1280" y="516" text-anchor="middle" font-size="12" fill="#475569">completion changes state</text>
+  </g>
+
+  <!-- Forward arrows -->
+  <g stroke="#0f766e" stroke-width="2.5" fill="none" marker-end="url(#arrow)">
+    <path d="M262 325 L298 325"/>
+    <path d="M552 325 L588 325"/>
+    <path d="M922 325 L958 325"/>
+    <path d="M1162 325 L1198 325"/>
+  </g>
+
+  <!-- Guard path for untrusted text -->
+  <path d="M242 390 C 280 390, 290 560, 330 560 L 700 560 C 740 560, 740 530, 755 524" stroke="#b91c1c" stroke-width="2" fill="none" stroke-dasharray="6 4" marker-end="url(#arrowRed)"/>
+  <rect x="300" y="546" width="400" height="30" rx="6" fill="#fff1f2" stroke="#fecdd3"/>
+  <text x="500" y="566" text-anchor="middle" font-size="12" fill="#9f1239">Guard gate: instructions isolated &#183; observations kept &#183; casualties never dropped</text>
+
+  <!-- Feedback loop -->
+  <path d="M1280 542 L1280 640 L150 640 L150 544" stroke="#64748b" stroke-width="2.5" fill="none" stroke-dasharray="8 5" marker-end="url(#arrowGrey)"/>
+  <rect x="300" y="606" width="820" height="68" rx="10" fill="#ffffff" stroke="#94a3b8"/>
+  <text x="710" y="630" text-anchor="middle" font-size="14" font-weight="600" fill="#0f172a">6 &#183; Acknowledgements, observations &amp; reassessment</text>
+  <text x="710" y="650" text-anchor="middle" font-size="12.5" fill="#475569">completion applies effect &#8594; new incident version &#8594; personas re-run &#8594; closure only with new observation + authorized reviewer</text>
+  <text x="710" y="666" text-anchor="middle" font-size="12" fill="#64748b">timers &#183; new evidence re-enters the graph &#183; approvals survive restart</text>
+
+  <!-- Mode bar -->
+  <g font-size="12.5">
+    <rect x="40" y="710" width="1320" height="54" rx="10" fill="#0f172a"/>
+    <text x="60" y="733" fill="#94a3b8" font-weight="600">MODE BAR (always visible)</text>
+    <rect x="236" y="720" width="150" height="32" rx="16" fill="#1e293b"/><text x="311" y="741" text-anchor="middle" fill="#e2e8f0">Data: synthetic</text>
+    <rect x="396" y="720" width="190" height="32" rx="16" fill="#1e293b"/><text x="491" y="741" text-anchor="middle" fill="#e2e8f0">Model: demo (no inference)</text>
+    <rect x="596" y="720" width="200" height="32" rx="16" fill="#1e293b"/><text x="696" y="741" text-anchor="middle" fill="#e2e8f0">Connectors: simulated</text>
+    <rect x="806" y="720" width="150" height="32" rx="16" fill="#1e293b"/><text x="881" y="741" text-anchor="middle" fill="#e2e8f0">Sovereign mode</text>
+    <rect x="966" y="720" width="374" height="32" rx="16" fill="#1e293b"/><text x="1153" y="741" text-anchor="middle" fill="#e2e8f0">EN / Arabic RTL &#183; offline basemap &#183; UTC stored, Asia/Dubai shown</text>
+  </g>
+
+  <text x="40" y="800" font-size="12.5" fill="#475569">Six labels never merged: observed water &#183; susceptibility &#183; forecast risk &#183; anomaly &#183; suspected incident &#183; confirmed incident.</text>
+  <text x="40" y="820" font-size="12.5" fill="#475569">Prototype with synthetic data. No agency integration, endorsement, exercised model inference or evaluated accuracy is claimed.</text>
+  <text x="1360" y="840" text-anchor="end" font-size="11" fill="#94a3b8">RainReady UAE &#183; docs/infographics/agentic-flow.svg</text>
+</svg>

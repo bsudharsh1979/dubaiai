@@ -1,0 +1,64 @@
+# RainReady UAE — small Compose stack: web, api, worker, db (PostgreSQL + PostGIS; pgvector optional).
+# Not executed in the authoring environment (Docker was unavailable); the SQLite path is what the tests
+# and the Modal deployment exercise. See docs/RUN.md.
+services:
+  db:
+    image: postgis/postgis:16-3.4
+    environment:
+      POSTGRES_USER: rainready
+      POSTGRES_PASSWORD: rainready
+      POSTGRES_DB: rainready
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U rainready"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  api:
+    build: ./api
+    env_file: .env.example
+    environment:
+      DATABASE_URL: postgresql+psycopg://rainready:rainready@db:5432/rainready
+      CORS_ORIGINS: '["http://localhost:3100","http://127.0.0.1:3100"]'
+      WORKER_ENABLED: "false"          # the worker service owns the job queue
+      ATTACHMENTS_DIR: /app/api/data/attachments
+      RASTERS_DIR: /app/api/data/rasters
+    volumes:
+      - apidata:/app/api/data
+    ports:
+      - "8100:8100"
+    depends_on:
+      db:
+        condition: service_healthy
+
+  worker:
+    build: ./api
+    env_file: .env.example
+    environment:
+      DATABASE_URL: postgresql+psycopg://rainready:rainready@db:5432/rainready
+      AUTO_MIGRATE: "false"            # api runs migrations
+      AUTO_SEED: "false"
+      ATTACHMENTS_DIR: /app/api/data/attachments
+      RASTERS_DIR: /app/api/data/rasters
+    volumes:
+      - apidata:/app/api/data
+    command: ["python", "-m", "rainready.worker"]
+    depends_on:
+      api:
+        condition: service_started
+
+  web:
+    build:
+      context: ./web
+      args:
+        NEXT_PUBLIC_API_BASE: http://localhost:8100
+    ports:
+      - "3100:3100"
+    depends_on:
+      - api
+
+volumes:
+  pgdata:
+  apidata:

@@ -36,7 +36,7 @@ Status legend: `[x]` done and verified locally · `[~]` implemented, partially v
 - [x] Sentinel-1 before/after GeoTIFF import with CRS/overlap/alignment/units/nodata validation
 
 ## Stage 6 — verification and demo
-- [x] Automated checks: 28 pytest (API, guardrails, tools) — see `docs/TEST_RESULTS.md`
+- [x] Automated checks: 29 pytest (API, guardrails, tools) — see `docs/TEST_RESULTS.md`
 - [x] Browser smoke test: 4 Playwright tests (principal demo end-to-end, malicious report isolation, Arabic RTL), passing locally and against the hosted URL
 - [x] Modal deployment (`deploy/modal_app.py`) — https://gamgn--rainready-uae-server-web.us-east.modal.run ; SQLite on a Volume, single container, embedded worker, hosted env flags
 - [x] Deliverables: `.env.example`, Dockerfiles, `docker-compose.yml`, pinned lockfiles (`uv.lock`, `requirements.lock.txt`, `package-lock.json`), README, ARCHITECTURE, RUN, MODEL_CARDS, THREAT_MODEL, DATA_ACCESS, TEST_RESULTS, DEMO_SCRIPT, NARRATIVE, MODEL_RUNS
@@ -52,6 +52,8 @@ Status legend: `[x]` done and verified locally · `[~]` implemented, partially v
 - [x] SITREP endpoint and panel from persisted state (ICS-201-style sections; copy as text; audited)
 - [x] After-action review captured at closure; open work orders stood down at closure (audited)
 - [x] Demo reset robust on Windows (locked SQLite → drop-all fallback)
+- [x] First page opens with the executive overview as a flow of events (nine cards, lanes, guardrail per step, live marker from the selected incident's persisted status, collapsible, EN/AR)
+- [x] Audit append serialised across threads (writer lock before reading the chain head); regression test with four concurrent writers; Assurance panel shows the real `broken_at_seq`/reason
 - [ ] Pre-agreed action timelines (candidate; needs real forecasts and agency agreement) — see `docs/BEST_PRACTICES.md`
 
 ## Definition of done — status

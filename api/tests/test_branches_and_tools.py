@@ -170,6 +170,35 @@ def test_structured_alert_sitrep_and_after_action_review(client):
     assert sr["after_action_review"]["improve"] == "earlier inlet inspection" and sr["open_items"] == []
 
 
+def test_audit_chain_survives_concurrent_appends(client):
+    """Request threads and the worker thread append audit events concurrently; the chain
+    must stay linear (no two events linking to the same predecessor)."""
+    import threading
+    from rainready import audit
+
+    barrier = threading.Barrier(4)
+    errors: list[BaseException] = []
+
+    def writer(tag: str):
+        try:
+            barrier.wait(timeout=10)
+            for i in range(15):
+                with session_scope() as db:
+                    audit.record(db, actor=f"t-{tag}", action="test.concurrent", subject_type="test", subject_id=f"{tag}-{i}", payload={"i": i})
+        except BaseException as e:  # noqa: BLE001
+            errors.append(e)
+
+    threads = [threading.Thread(target=writer, args=(str(n),)) for n in range(4)]
+    for th in threads:
+        th.start()
+    for th in threads:
+        th.join(timeout=60)
+    assert not errors, errors
+    with session_scope() as db:
+        result = audit.verify_chain(db)
+    assert result["ok"], result
+
+
 # --- hazard tools --------------------------------------------------------------
 def test_mass_balance_and_units():
     specs = [hydrology.CatchmentSpec("up", "up", 1_000_000, 0.6, 10_000, 0.3, downstream_id="low", travel_minutes=20, mechanism="flash_flood"),

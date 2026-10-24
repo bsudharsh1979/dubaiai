@@ -16,8 +16,9 @@ const NAV: { href: string; key: StringKey; testid: string }[] = [
   { href: "/how-it-works", key: "nav_how", testid: "nav-how" },
 ];
 
-// Read-only explanatory pages that need no identity (they call only unauthenticated endpoints such as /api/health).
-const PUBLIC_PATHS = new Set(["/how-it-works", "/how-it-works/"]);
+// Pages that render without identity: the explanatory page, and the landing page whose executive overview is
+// static (the command view inside it renders SignInPanel itself until an identity exists).
+const PUBLIC_PATHS = new Set(["/", "/how-it-works", "/how-it-works/"]);
 
 export function Shell({ children }: { children: ReactNode }) {
   const { t, locale, setLocale } = useI18n();
@@ -157,11 +158,11 @@ function ArchitectureStrip() {
   );
 }
 
-function SignInPanel() {
+export function SignInPanel({ compact = false }: { compact?: boolean }) {
   const { t } = useI18n();
   const { identities, login, config } = useSession();
   return (
-    <div className="mx-auto mt-10 max-w-xl card p-6" data-testid="sign-in">
+    <div className={`mx-auto max-w-xl card p-6 ${compact ? "mt-2" : "mt-10"}`} data-testid="sign-in">
       <h1 className="text-lg font-semibold">{t("app_name")}</h1>
       <p className="mt-1 text-sm text-ink-700">{t("sign_in_hint")}</p>
       {config?.modes.demo_identity_switcher ? (

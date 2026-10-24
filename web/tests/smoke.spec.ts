@@ -23,10 +23,20 @@ test("principal rainfall demo end-to-end through the UI", async ({ page }) => {
   await expect(page.getByTestId("sector-map")).toBeVisible();
   await expect(page.getByTestId("architecture-strip")).toContainText("Brain 1");
 
+  // Executive overview on the first page: flow of events, no live marker before any incident exists
+  const overview = page.getByTestId("exec-overview");
+  await expect(overview).toContainText("executive summary");
+  await expect(page.getByTestId("event-flow").getByTestId(/flow-event-\d/)).toHaveCount(9);
+  await expect(page.getByTestId("flow-event-6")).toContainText("human approves");
+  await expect(page.getByTestId("flow-live-marker")).toHaveCount(0);
+
   // Run scenario A as the drainage controller
   await page.getByTestId("run-SC-A-rainfall").click();
   await expect(page.getByTestId("incident-list")).toContainText("Awaiting approval", { timeout: 30_000 });
   await expect(page.getByTestId("next-decision")).toContainText("human approval");
+  // Live marker now sits on the human-approval event, derived from the persisted status
+  await expect(page.getByTestId("flow-event-6")).toHaveAttribute("data-live", "1");
+  await expect(page.getByTestId("flow-live-marker")).toContainText("Awaiting approval");
   const sel = page.getByTestId("incident-summary");
   await expect(sel.getByTestId("label-chip")).toContainText("Forecast risk");
   await expect(sel).toContainText("no calibrated model");

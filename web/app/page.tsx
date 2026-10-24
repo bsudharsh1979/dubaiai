@@ -6,11 +6,13 @@ import { pick, useI18n } from "@/lib/i18n";
 import { useLive, useSession } from "@/lib/session";
 import type { Incident, Scenario } from "@/lib/types";
 import { SectorMap } from "@/components/SectorMap";
+import { ExecutiveOverview } from "@/components/EventFlow";
+import { SignInPanel } from "@/components/Shell";
 import { BandChip, Chip, Empty, ErrorBox, KV, LabelChip, Section, Spinner, StatusChip } from "@/components/ui";
 
 export default function CommandPage() {
   const { t, locale } = useI18n();
-  const { identity, can, events } = useSession();
+  const { identity, can, events, loading } = useSession();
   const [scenarios, setScenarios] = useState<Scenario[]>([]);
   const [incidents, setIncidents] = useState<Incident[]>([]);
   const [busy, setBusy] = useState<string | null>(null);
@@ -54,8 +56,8 @@ export default function CommandPage() {
     return { hazard: sel?.geometry ? ({ type: "Feature", geometry: sel.geometry, properties: { id: sel.id } } as GeoJSON.Feature) : null, bands };
   }, [sel]);
 
-  return (
-    <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_380px]">
+  const commandView = (
+    <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_380px]" data-testid="command-view">
       <div className="space-y-4">
         <SectorMap overlay={overlay} height={440} />
         <Section title={t("incidents")} testid="incident-list" right={<Chip tone="neutral">{incidents.length}</Chip>}>
@@ -138,6 +140,20 @@ export default function CommandPage() {
           </ul>
         </Section>
       </div>
+    </div>
+  );
+
+  return (
+    <div className="space-y-4">
+      <ExecutiveOverview currentStatus={sel?.status ?? null} incidentTitle={sel ? pick(locale, sel, "title") : null} />
+      {!loading && !identity ? (
+        <div className="space-y-2" data-testid="command-signin">
+          <p className="text-center text-sm text-ink-700">{t("sign_in_to_operate")}</p>
+          <SignInPanel compact />
+        </div>
+      ) : (
+        commandView
+      )}
     </div>
   );
 }

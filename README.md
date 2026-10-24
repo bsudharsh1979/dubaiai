@@ -14,7 +14,7 @@ imply endorsement by, or an existing integration with, any UAE authority.
 
 ![Key features](docs/infographics/key-features.svg)
 
-Executive summary: [`docs/EXECUTIVE_SUMMARY.md`](docs/EXECUTIVE_SUMMARY.md) (also in-app at `/how-it-works`, no sign-in needed) · Guardrail layers: [`docs/infographics/guardrails.svg`](docs/infographics/guardrails.svg) · Practices adapted from international emergency-management processes: [`docs/BEST_PRACTICES.md`](docs/BEST_PRACTICES.md)
+Executive summary: [`docs/EXECUTIVE_SUMMARY.md`](docs/EXECUTIVE_SUMMARY.md) (in-app: the first page opens with it as a flow-of-events illustration with a live marker for the selected incident; long form at `/how-it-works`; neither needs a sign-in) · Guardrail layers: [`docs/infographics/guardrails.svg`](docs/infographics/guardrails.svg) · Practices adapted from international emergency-management processes: [`docs/BEST_PRACTICES.md`](docs/BEST_PRACTICES.md)
 
 ### Process refinements adapted from international practice
 
@@ -66,7 +66,7 @@ cd rainready/web && npm run build
 cd ../api; $env:STATIC_DIR="../web/out"; uv run uvicorn rainready.main:app --port 8100   # http://localhost:8100
 ```
 
-Tests: `cd rainready/api && uv run pytest` (28 tests) · `cd rainready/web && npx playwright test` (4 browser smoke tests against a running server).
+Tests: `cd rainready/api && uv run pytest` (29 tests) · `cd rainready/web && npx playwright test` (4 browser smoke tests against a running server).
 Full run instructions, Compose and Modal: `docs/RUN.md`.
 
 ## Repository layout

@@ -41,7 +41,10 @@ coordination.
     situation reports from persisted state, after-action review at closure, and stand-down of open work orders
     when an incident closes.
 
-This summary is also available inside the app at `/how-it-works` (no sign-in required), with live server status.
+This summary is also available inside the app: the first page opens with it as a **flow of events** (nine steps
+across lanes — signals, hazard tools, AI personas, policy engine, human authority, departments, review — each with
+its guardrail, plus a live marker showing where the selected incident currently sits, derived from its persisted
+status), and `/how-it-works` carries the long form with live server status. Neither needs a sign-in.
 
 ![Guardrails](infographics/guardrails.svg)
 
@@ -50,7 +53,7 @@ This summary is also available inside the app at `/how-it-works` (no sign-in req
 | Verified | Not yet |
 |---|---|
 | Full rainfall workflow end-to-end; leak and HSE branches; four scenarios with different outcomes | Real model inference (hosted credential rejected with 401; local NIM unavailable) — path implemented, reports "not exercised" |
-| 28 API tests, 4 browser smoke tests, passing locally and on the hosted URL | PostGIS Compose stack (written, not run here) |
+| 29 API tests, 4 browser smoke tests, passing locally and on the hosted URL | PostGIS Compose stack (written, not run here) |
 | Deployed on Modal with guardrails on: https://gamgn--rainready-uae-server-web.us-east.modal.run | Guard, embedding, vision and EO-encoder adapters (implemented, not exercised) |
 | Sentinel-1 import validation on synthetic GeoTIFFs | Any predictive accuracy — **not evaluated**; no labelled UAE data |
 

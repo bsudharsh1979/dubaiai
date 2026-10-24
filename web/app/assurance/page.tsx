@@ -11,7 +11,7 @@ type Assurance = {
   providers: ProviderStatus[];
   policy_decisions: { id: string; incident_id: string | null; subject_type: string; actor: string; decision: string; reasons: string[]; created_at: string }[];
   model_versions: { id: string; kind: string; name: string; version: string; card_uri: string; calibrated: boolean; notes: string }[];
-  audit_chain: { ok: boolean; events: number; first_bad_seq?: number | null; detail?: string };
+  audit_chain: { ok: boolean; events: number; broken_at_seq?: number | null; reason?: string };
   evaluation: Record<string, unknown>;
   worker: { alive: boolean; last_tick: string | null };
 };
@@ -109,7 +109,7 @@ export default function AssurancePage() {
           {a && (
             <>
               <KV k="Events" v={a.audit_chain.events} />
-              <KV k="Chain intact" v={<Chip tone={a.audit_chain.ok ? "low" : "severe"}>{a.audit_chain.ok ? "verified" : `broken at seq ${a.audit_chain.first_bad_seq}`}</Chip>} />
+              <KV k="Chain intact" v={<Chip tone={a.audit_chain.ok ? "low" : "severe"}>{a.audit_chain.ok ? "verified" : `broken at seq ${a.audit_chain.broken_at_seq}${a.audit_chain.reason ? ` — ${a.audit_chain.reason}` : ""}`}</Chip>} />
             </>
           )}
           <p className="mt-1 text-[11px] text-ink-700/70">Each event stores the hash of the previous event; re-verification detects edits or deletions inside the chain. This is tamper-evident within the database, not tamper-proof — an external anchor would be needed for stronger guarantees.</p>

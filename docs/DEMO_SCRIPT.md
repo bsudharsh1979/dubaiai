@@ -2,8 +2,10 @@
 
 Setup (before the clock): open https://gamgn--rainready-uae-server-web.us-east.modal.run (or `http://localhost:8100`),
 Assurance → **Reset demo**, sign in as **Observer**. Language EN; switch to AR once at the end.
-If the audience needs the big picture first, open **How it works** (`/how-it-works`) for 30 seconds before starting —
-it is the executive summary with live server status and needs no sign-in.
+The first page opens with the executive overview drawn as a flow of events (nine steps with lanes and guardrails);
+point at it for 20 seconds, then click **Hide overview** so the map fills the screen. As the incident progresses the
+overview's live marker moves with the persisted status (e.g. onto "A human approves" while awaiting approval).
+**How it works** (`/how-it-works`) is the long form with live server status; neither needs a sign-in.
 
 | t | View | Say | Do / show |
 |---|---|---|---|

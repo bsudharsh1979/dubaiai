@@ -391,7 +391,8 @@ def plan(state: IncidentState) -> dict:
 
 def policy_check(state: IncidentState) -> dict:
     planner, comms, assurance = state.get("planner") or {}, state.get("comms") or {}, state.get("assurance") or {}
-    actions = [a for a in planner.get("actions", [])]
+    # The CAP-aligned structured alert travels inside the advisory action so it is covered by the proposal payload hash.
+    actions = [({**a, "alert": comms.get("alert")} if a.get("kind") == "advisory" and comms.get("alert") else dict(a)) for a in planner.get("actions", [])]
     with session_scope() as db:
         inc = db.get(Incident, state["incident_id"])
         # Duplicate suppression: actions already dispatched/underway/completed for this incident are not re-proposed on reassessment.

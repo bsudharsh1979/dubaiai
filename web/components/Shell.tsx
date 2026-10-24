@@ -13,7 +13,11 @@ const NAV: { href: string; key: StringKey; testid: string }[] = [
   { href: "/incidents", key: "nav_incidents", testid: "nav-incidents" },
   { href: "/field", key: "nav_field", testid: "nav-field" },
   { href: "/assurance", key: "nav_assurance", testid: "nav-assurance" },
+  { href: "/how-it-works", key: "nav_how", testid: "nav-how" },
 ];
+
+// Read-only explanatory pages that need no identity (they call only unauthenticated endpoints such as /api/health).
+const PUBLIC_PATHS = new Set(["/how-it-works", "/how-it-works/"]);
 
 export function Shell({ children }: { children: ReactNode }) {
   const { t, locale, setLocale } = useI18n();
@@ -97,7 +101,7 @@ export function Shell({ children }: { children: ReactNode }) {
         </div>
       )}
       <main className="mx-auto w-full max-w-[1600px] flex-1 px-4 py-4">
-        {!loading && !identity ? <SignInPanel /> : children}
+        {!loading && !identity && !PUBLIC_PATHS.has(path ?? "") ? <SignInPanel /> : children}
       </main>
       <footer className="border-t border-ink-100 bg-white px-4 py-3 text-[11px] text-ink-700/80">
         <div className="mx-auto flex max-w-[1600px] flex-col gap-2 md:flex-row md:items-center md:justify-between">

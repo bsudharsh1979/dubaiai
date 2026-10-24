@@ -1,9 +1,9 @@
 "use client";
-import { useMemo, useState } from "react";
+import { Fragment, useMemo, useState } from "react";
 import { api, dubai, newIdempotencyKey } from "@/lib/api";
 import { pick, useI18n } from "@/lib/i18n";
 import { useSession } from "@/lib/session";
-import type { IncidentDetail, Proposal, WorkOrder } from "@/lib/types";
+import type { IncidentDetail, Proposal, Sitrep, StructuredAlert, WorkOrder } from "@/lib/types";
 import { IncidentPicker, useIncidentDetail } from "@/components/IncidentPicker";
 import { SectorMap } from "@/components/SectorMap";
 import { BandChip, Chip, Empty, ErrorBox, KV, LabelChip, Section, Spinner, StatusChip } from "@/components/ui";
@@ -17,6 +17,9 @@ export default function IncidentsPage() {
   const [note, setNote] = useState("");
   const [closeRef, setCloseRef] = useState("");
   const [closeNote, setCloseNote] = useState("");
+  const [aar, setAar] = useState({ what_was_expected: "", what_happened: "", went_well: "", improve: "", follow_ups: "" });
+  const [sitrep, setSitrep] = useState<Sitrep | null>(null);
+  const [copied, setCopied] = useState(false);
   const [question, setQuestion] = useState("");
   const [answer, setAnswer] = useState<{ answer: string; basis: string; cited_inputs: { type: string; id: string; summary: string }[]; guard?: Record<string, unknown> } | null>(null);
   const [editText, setEditText] = useState<string | null>(null);
@@ -96,6 +99,7 @@ export default function IncidentsPage() {
                   </div>
                 </div>
               </div>
+              <RiskMatrix likelihood={detail.severity_band} consequence={detail.consequence} />
               <ErrorBox error={actErr} />
             </Section>
 
@@ -131,11 +135,75 @@ export default function IncidentsPage() {
                   ))}
                 </select>
                 <input className="rounded-lg border border-ink-100 p-1.5 text-sm" placeholder="confirmation note" value={closeNote} onChange={(e) => setCloseNote(e.target.value)} data-testid="close-note" />
-                <button type="button" className="btn-primary text-xs" disabled={busy !== null || !can("incident:close") || !closeRef || closeNote.length < 5} onClick={() => void act("close", () => api(`/api/incidents/${detail.id}/close`, { method: "POST", json: { confirmation_note: closeNote, new_observation_ref: closeRef } }))} data-testid="close-submit">
+                <button
+                  type="button"
+                  className="btn-primary text-xs"
+                  disabled={busy !== null || !can("incident:close") || !closeRef || closeNote.length < 5}
+                  onClick={() => {
+                    const hasAar = Object.values(aar).some((v) => v.trim().length > 0);
+                    const after_action = hasAar ? { ...aar, follow_ups: aar.follow_ups.split("\n").map((s) => s.trim()).filter(Boolean) } : undefined;
+                    void act("close", () => api(`/api/incidents/${detail.id}/close`, { method: "POST", json: { confirmation_note: closeNote, new_observation_ref: closeRef, after_action } }));
+                  }}
+                  data-testid="close-submit"
+                >
                   {t("close_incident")}
                 </button>
               </div>
+              <details className="mt-2 text-xs" data-testid="aar">
+                <summary className="cursor-pointer text-ink-700/80">{t("aar")}</summary>
+                <div className="mt-2 grid gap-2 md:grid-cols-2">
+                  {(["what_was_expected", "what_happened", "went_well", "improve"] as const).map((k) => (
+                    <label key={k} className="flex flex-col gap-0.5">
+                      <span className="label">{t(({ what_was_expected: "aar_expected", what_happened: "aar_happened", went_well: "aar_well", improve: "aar_improve" } as const)[k])}</span>
+                      <textarea className="rounded border border-ink-100 p-1" rows={2} value={aar[k]} onChange={(e) => setAar({ ...aar, [k]: e.target.value })} data-testid={`aar-${k}`} />
+                    </label>
+                  ))}
+                  <label className="flex flex-col gap-0.5 md:col-span-2">
+                    <span className="label">{t("aar_followups")}</span>
+                    <textarea className="rounded border border-ink-100 p-1" rows={2} value={aar.follow_ups} onChange={(e) => setAar({ ...aar, follow_ups: e.target.value })} data-testid="aar-follow_ups" />
+                  </label>
+                </div>
+              </details>
               {!can("incident:close") && <p className="mt-1 text-[11px] text-band-severe">Your role cannot confirm closure (incident commander only; server-enforced).</p>}
+              {detail.summary?.after_action_review ? (
+                <div className="mt-2 rounded bg-sand-100 p-2 text-xs" data-testid="aar-stored">
+                  <span className="label">after-action review recorded</span>
+                  <pre className="mt-1 whitespace-pre-wrap font-sans">{JSON.stringify(detail.summary.after_action_review, null, 1).replace(/[{}"]/g, "")}</pre>
+                </div>
+              ) : null}
+            </Section>
+
+            <Section
+              title={t("sitrep")}
+              testid="sitrep"
+              right={
+                <div className="flex gap-1">
+                  <button type="button" className="btn-secondary text-xs" disabled={busy !== null} onClick={() => void act("sitrep", async () => setSitrep(await api<Sitrep>(`/api/incidents/${detail.id}/sitrep`)))} data-testid="sitrep-generate">
+                    {busy === "sitrep" ? <Spinner /> : t("sitrep_generate")}
+                  </button>
+                  {sitrep && (
+                    <button
+                      type="button"
+                      className="btn-secondary text-xs"
+                      onClick={() => {
+                        void navigator.clipboard?.writeText(sitrepText(sitrep, locale)).then(() => {
+                          setCopied(true);
+                          setTimeout(() => setCopied(false), 1500);
+                        });
+                      }}
+                      data-testid="sitrep-copy"
+                    >
+                      {copied ? t("sitrep_copied") : t("sitrep_copy")}
+                    </button>
+                  )}
+                </div>
+              }
+            >
+              {!sitrep ? (
+                <p className="text-xs text-ink-700/70">Incident-briefing layout assembled from persisted state only (situation · evidence · decisions · resources · open items · operational period · caveats).</p>
+              ) : (
+                <SitrepView s={sitrep} locale={locale} />
+              )}
             </Section>
           </div>
 
@@ -245,6 +313,7 @@ function ProposalCard({ p, detail, latest, busy, act, note, setNote, myAuthority
             <span className="text-[10px] text-ink-700/60">
               {a.department} · {t("authority")}: {a.requires_authority}
             </span>
+            {a.alert && <AlertCard alert={a.alert} locale={locale} />}
           </li>
         ))}
       </ol>
@@ -353,4 +422,169 @@ function WorkOrderRow({ w, busy, act, canAck, canComplete, locale }: { w: WorkOr
       </div>
     </li>
   );
+}
+
+const LIKELIHOOD = ["low", "moderate", "high", "severe"] as const;
+const CONSEQUENCE = ["minor", "moderate", "major", "severe"] as const;
+const CELL_TONE = (li: number, ci: number) => {
+  const s = li + ci;
+  return s >= 5 ? "bg-band-severe/70 text-white" : s >= 3 ? "bg-band-high/60" : s >= 2 ? "bg-band-moderate/50" : "bg-band-low/40";
+};
+
+function RiskMatrix({ likelihood, consequence }: { likelihood: string | null; consequence: string | null }) {
+  const { t } = useI18n();
+  const li = LIKELIHOOD.indexOf((likelihood ?? "") as (typeof LIKELIHOOD)[number]);
+  const ci = CONSEQUENCE.indexOf((consequence ?? "") as (typeof CONSEQUENCE)[number]);
+  return (
+    <div className="mt-3" data-testid="risk-matrix">
+      <div className="label">{t("risk_matrix")}</div>
+      <div className="mt-1 grid grid-cols-[auto_repeat(4,minmax(0,1fr))] gap-0.5 text-[10px]">
+        <div />
+        {CONSEQUENCE.map((c) => (
+          <div key={c} className="text-center text-ink-700/70">
+            {c}
+          </div>
+        ))}
+        {[...LIKELIHOOD].reverse().map((l, ri) => {
+          const lIdx = LIKELIHOOD.length - 1 - ri;
+          return (
+            <Fragment key={l}>
+              <div className="pe-1 text-end text-ink-700/70">{l}</div>
+              {CONSEQUENCE.map((c, cIdx) => {
+                const here = lIdx === li && cIdx === ci;
+                return (
+                  <div key={c} className={`h-6 rounded ${CELL_TONE(lIdx, cIdx)} ${here ? "ring-2 ring-ink-900" : ""}`} data-testid={here ? "risk-cell-current" : undefined} title={`${l} × ${c}`} aria-label={here ? `current: ${l} likelihood, ${c} consequence` : undefined}>
+                    {here && <span className="flex h-full items-center justify-center font-semibold">●</span>}
+                  </div>
+                );
+              })}
+            </Fragment>
+          );
+        })}
+      </div>
+      <p className="mt-1 text-[10px] text-ink-700/60">
+        {t("risk_matrix_note")}
+        {li < 0 || ci < 0 ? " · band unknown — no cell highlighted" : ""}
+      </p>
+    </div>
+  );
+}
+
+function AlertCard({ alert, locale }: { alert: StructuredAlert; locale: "en" | "ar" }) {
+  const { t } = useI18n();
+  const tone = alert.message_level === "Emergency Warning" ? "severe" : alert.message_level === "Watch and Act" ? "high" : "sand";
+  return (
+    <div className="mt-1 w-full rounded border border-ink-100 bg-sand-100/40 p-2" data-testid="structured-alert">
+      <div className="flex flex-wrap items-center gap-1">
+        <span className="label">{t("structured_alert")}</span>
+        <Chip tone={tone as "severe" | "high" | "sand"}>{alert.message_level}</Chip>
+        <Chip tone="neutral">urgency {alert.urgency}</Chip>
+        <Chip tone="neutral">severity {alert.severity}</Chip>
+        <Chip tone="neutral" title={alert.certainty_basis}>
+          certainty {alert.certainty}
+        </Chip>
+        <Chip tone="neutral">response {alert.response_type}</Chip>
+        <Chip tone="neutral">expires +{alert.expires_minutes} min</Chip>
+      </div>
+      <p className="mt-1">{locale === "ar" ? alert.instruction_ar : alert.instruction_en}</p>
+      <p className="mt-0.5 text-[10px] text-ink-700/60">
+        {alert.standard} · {alert.sender} · {alert.certainty_basis}
+      </p>
+    </div>
+  );
+}
+
+function SitrepView({ s, locale }: { s: Sitrep; locale: "en" | "ar" }) {
+  const { t } = useI18n();
+  const sit = s.situation as Record<string, string | string[] | null>;
+  return (
+    <div className="space-y-2 text-xs" data-testid="sitrep-view">
+      <div className="ltr-only text-[10px] text-ink-700/60">
+        generated {dubai(s.generated_at, locale)} by {s.generated_by} · incident v{s.version} · {s.basis}
+      </div>
+      <div className="grid gap-2 md:grid-cols-2">
+        <div className="rounded border border-ink-100 p-2">
+          <div className="label">1 · situation</div>
+          <div>
+            {String(sit.title)} — {String(sit.label)} · {t("severity")} {String(sit.severity_band)} · {t("consequence")} {String(sit.consequence_band)} · evidence {String(sit.evidence_quality)}
+          </div>
+          <div className="text-ink-700/80">
+            mechanism {String(sit.mechanism ?? "—")} · observed water {String(sit.observed_water ?? "—")} · exposed assets {(sit.exposed_assets as string[] | null)?.join(", ") || "—"}
+          </div>
+          <div className="text-[10px] text-ink-700/60">{String(sit.probability_note)}</div>
+        </div>
+        <div className="rounded border border-ink-100 p-2">
+          <div className="label">2 · evidence</div>
+          <div>
+            {s.evidence.items} items · {s.evidence.independent_sources} independent sources · stale {s.evidence.stale.length} · conflicts {s.evidence.conflicts.length} · poor {s.evidence.poor_quality.length}
+          </div>
+          <div className="text-ink-700/80">
+            field reports {s.evidence.field_reports.total} (accepted {s.evidence.field_reports.accepted}, pending {s.evidence.field_reports.pending}, with isolated instructions {s.evidence.field_reports.with_isolated_instructions})
+          </div>
+          {s.evidence.persona_failures.length > 0 && <div className="text-band-severe">persona failures: {s.evidence.persona_failures.join(", ")}</div>}
+        </div>
+        <div className="rounded border border-ink-100 p-2">
+          <div className="label">3 · decisions</div>
+          <div>
+            {s.decisions.proposals} proposal(s)
+            {s.decisions.latest_proposal ? ` · latest v${s.decisions.latest_proposal.version} ${s.decisions.latest_proposal.status}: ${s.decisions.latest_proposal.actions.join(", ")}` : ""}
+          </div>
+          <div className="text-ink-700/80">{s.decisions.approvals.length === 0 ? "no approvals" : s.decisions.approvals.map((a) => `${a.decision} (${a.approver_role}, ${a.status})`).join("; ")}</div>
+        </div>
+        <div className="rounded border border-ink-100 p-2">
+          <div className="label">4 · resources / work orders</div>
+          {s.resources.length === 0 ? (
+            <div>—</div>
+          ) : (
+            <ul>
+              {s.resources.map((r) => (
+                <li key={r.id}>
+                  {r.kind} · {r.department} · <b>{r.status}</b>
+                  {r.physical_effect_applied ? " · effect applied" : ""}
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+        <div className="rounded border border-ink-100 p-2">
+          <div className="label">5 · open items</div>
+          {s.open_items.length === 0 ? <div>none</div> : <ul className="list-disc ps-4">{s.open_items.map((o, i) => <li key={i}>{o}</li>)}</ul>}
+        </div>
+        <div className="rounded border border-ink-100 p-2">
+          <div className="label">6 · {t("op_period")}</div>
+          <div className="ltr-only">
+            {dubai(s.operational_period.start, locale)} → {s.operational_period.closed_at ? dubai(s.operational_period.closed_at, locale) : "open"} · {t("elapsed")} {s.operational_period.elapsed_minutes} min · {s.operational_period.status}
+          </div>
+        </div>
+      </div>
+      <div className="rounded bg-sand-100 p-2 text-[10px] text-ink-700/80">
+        <div className="label">7 · caveats</div>
+        <ul className="list-disc ps-4">{s.caveats.map((c, i) => <li key={i}>{c}</li>)}</ul>
+      </div>
+      {s.after_action_review && (
+        <div className="rounded border border-ink-100 p-2">
+          <div className="label">8 · after-action review</div>
+          <pre className="whitespace-pre-wrap font-sans">{JSON.stringify(s.after_action_review, null, 1).replace(/[{}"]/g, "")}</pre>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function sitrepText(s: Sitrep, locale: "en" | "ar"): string {
+  const sit = s.situation as Record<string, unknown>;
+  const lines = [
+    `SITREP — incident ${s.incident_id} v${s.version} — generated ${dubai(s.generated_at, locale)} by ${s.generated_by}`,
+    `Basis: ${s.basis}`,
+    "",
+    `1. SITUATION: ${sit.title} — ${sit.label}; severity ${sit.severity_band}; consequence ${sit.consequence_band}; evidence ${sit.evidence_quality}; mechanism ${sit.mechanism ?? "-"}; exposed assets ${(sit.exposed_assets as string[] | undefined)?.join(", ") || "-"}. ${sit.probability_note}`,
+    `2. EVIDENCE: ${s.evidence.items} items from ${s.evidence.independent_sources} independent sources; stale ${s.evidence.stale.length}; conflicts ${s.evidence.conflicts.length}; poor ${s.evidence.poor_quality.length}; field reports ${s.evidence.field_reports.total} (accepted ${s.evidence.field_reports.accepted}, pending ${s.evidence.field_reports.pending}).`,
+    `3. DECISIONS: ${s.decisions.proposals} proposal(s)${s.decisions.latest_proposal ? `; latest v${s.decisions.latest_proposal.version} ${s.decisions.latest_proposal.status} [${s.decisions.latest_proposal.actions.join(", ")}] hash ${s.decisions.latest_proposal.payload_hash.slice(0, 12)}` : ""}; approvals: ${s.decisions.approvals.map((a) => `${a.decision}/${a.approver_role}/${a.status}`).join(", ") || "none"}.`,
+    `4. RESOURCES: ${s.resources.map((r) => `${r.kind} (${r.department}) ${r.status}${r.physical_effect_applied ? " [effect applied]" : ""}`).join("; ") || "-"}`,
+    `5. OPEN ITEMS: ${s.open_items.length ? s.open_items.map((o) => `\n   - ${o}`).join("") : "none"}`,
+    `6. OPERATIONAL PERIOD: from ${dubai(s.operational_period.start, locale)}; elapsed ${s.operational_period.elapsed_minutes} min; status ${s.operational_period.status}${s.operational_period.closed_at ? `; closed ${dubai(s.operational_period.closed_at, locale)}` : ""}`,
+    `7. CAVEATS: ${s.caveats.join(" ")}`,
+  ];
+  if (s.after_action_review) lines.push(`8. AFTER-ACTION REVIEW: ${JSON.stringify(s.after_action_review)}`);
+  return lines.join("\n");
 }

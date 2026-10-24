@@ -38,7 +38,7 @@ uv run uvicorn rainready.main:app --port 8100   # http://localhost:8100
 ## 3. Tests
 
 ```powershell
-cd rainready/api && uv run pytest -q                       # 27 API/guardrail/tool tests (temporary SQLite DB)
+cd rainready/api && uv run pytest -q                       # 28 API/guardrail/tool tests (temporary SQLite DB)
 cd rainready/web && npx playwright install chromium        # once
 npx playwright test                                        # against http://127.0.0.1:8100 (set RR_BASE_URL to override)
 ```

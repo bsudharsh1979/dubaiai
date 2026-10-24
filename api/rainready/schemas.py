@@ -91,9 +91,20 @@ class FieldReportReviewIn(BaseModel):
     attach_incident_id: str | None = None
 
 
+class AfterActionReview(BaseModel):
+    """Structured after-action review captured at closure (adapted from the AAR practice used by several
+    national emergency-management agencies).  Free text from a reviewer; stored on the incident summary."""
+    what_was_expected: str = Field("", max_length=1000)
+    what_happened: str = Field("", max_length=1000)
+    went_well: str = Field("", max_length=1000)
+    improve: str = Field("", max_length=1000)
+    follow_ups: list[str] = Field(default_factory=list, max_length=20)
+
+
 class CloseIncidentIn(BaseModel):
     confirmation_note: str = Field(..., min_length=5, max_length=500)
     new_observation_ref: str = Field(..., description="id of an observation, field report or tool result newer than the last response")
+    after_action: AfterActionReview | None = None
 
 
 class AssistantIn(BaseModel):

@@ -105,7 +105,7 @@
   </g>
 
   <g font-size="13" fill="#94a3b8">
-    <text x="60" y="852">Verified: 27 API tests &#183; 3 browser smoke tests (local + hosted) &#183; deployed on Modal (single container, SQLite on volume)</text>
+    <text x="60" y="852">Verified: 28 API tests &#183; 4 browser smoke tests (local + hosted) &#183; deployed on Modal (single container, SQLite on volume)</text>
     <text x="60" y="874">Not claimed: lives saved, losses avoided, accuracy, agency endorsement, exercised model inference.</text>
     <text x="1340" y="874" text-anchor="end" font-size="11" fill="#475569">docs/infographics/key-features.svg</text>
   </g>

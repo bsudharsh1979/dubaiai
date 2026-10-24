@@ -44,6 +44,14 @@ test("principal rainfall demo end-to-end through the UI", async ({ page }) => {
   await expect(page.getByTestId("proposal-list")).toContainText("pump_deployment");
   await expect(page.getByTestId("public-text")).not.toContainText("Substation");
   await expect(page.getByTestId("approve")).toContainText("2/5");
+  // Process refinements: risk matrix highlights the current band cell; advisory carries a CAP-aligned structured alert
+  await expect(page.getByTestId("risk-cell-current")).toBeVisible();
+  await expect(page.getByTestId("structured-alert").first()).toContainText("not a probability");
+  await expect(page.getByTestId("structured-alert").first()).toContainText(/Advice|Watch and Act|Emergency Warning/);
+  // SITREP from persisted state
+  await page.getByTestId("sitrep-generate").click();
+  await expect(page.getByTestId("sitrep-view")).toContainText("persisted state only");
+  await expect(page.getByTestId("sitrep-view")).toContainText("human approval");
 
   await signIn(page, "u_field");
   await page.reload();
@@ -106,6 +114,24 @@ test("malicious field report: instruction isolated, no action path", async ({ pa
   const inc = await (await page.request.get("/api/incidents")).json();
   const detail = await (await page.request.get(`/api/incidents/${inc[0].id}`)).json();
   expect(detail.work_orders.filter((w: { kind: string }) => w.kind === "advisory" && w.payload?.public_text_en?.toLowerCase().includes("evacuat")).length).toBe(0);
+});
+
+test("How it works: executive summary page with live server status", async ({ page }) => {
+  await page.goto("/how-it-works");
+  await expect(page.getByTestId("how-hero")).toContainText("human-approved");
+  await expect(page.getByTestId("how-stages")).toContainText("Brain 1");
+  await expect(page.getByTestId("how-practices")).toContainText("Common Alerting Protocol");
+  await expect(page.getByTestId("how-status")).toContainText("Worker alive", { timeout: 15_000 });
+  await expect(page.getByTestId("how-status")).toContainText("exercised");
+  await expect(page.getByTestId("how-not-claimed")).toContainText("not tamper-proof");
+  // infographics are served locally (no CDN)
+  const img = page.locator('img[src="/infographics/agentic-flow.svg"]');
+  await expect(img).toBeVisible();
+  expect(await img.evaluate((el) => (el as HTMLImageElement).naturalWidth)).toBeGreaterThan(0);
+  // Arabic version renders RTL
+  await page.getByTestId("lang-toggle").click();
+  await expect(page.getByTestId("how-hero")).toContainText("ملخص تنفيذي");
+  await page.getByTestId("lang-toggle").click();
 });
 
 test("Arabic RTL layout", async ({ page }) => {

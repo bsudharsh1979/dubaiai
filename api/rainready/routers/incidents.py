@@ -181,9 +181,68 @@ def close_incident(incident_id: str, body: CloseIncidentIn, ident: Identity = De
     i.status, i.closed_at, i.closed_by = "closed", utcnow(), ident.id
     i.next_decision = "closed by incident commander after new observation review"
     i.version += 1
-    audit.record(db, ident.id, "incident.closed", "incident", i.id, {"note": body.confirmation_note, "observation_ref": ref})
+    if body.after_action is not None:
+        aar = body.after_action.model_dump()
+        i.summary = {**i.summary, "after_action_review": {**aar, "recorded_by": ident.id, "recorded_at": iso(utcnow())}}
+    # Stand down any work order still open: a closed incident must not leave live tasking behind (simulated connectors only).
+    stood_down = []
+    for w in db.execute(select(WorkOrder).where(WorkOrder.incident_id == i.id, WorkOrder.status.in_(["approved", "dispatched", "acknowledged", "in_progress"]))).scalars().all():
+        w.status = "cancelled"
+        w.payload = {**w.payload, "stood_down_at_closure": True}
+        stood_down.append(w.id)
+    if stood_down:
+        audit.record(db, ident.id, "workorder.stood_down", "incident", i.id, {"work_orders": stood_down, "reason": "incident closed by commander"})
+        events.publish("work_order", {"incident_id": i.id, "stood_down": stood_down})
+    audit.record(db, ident.id, "incident.closed", "incident", i.id, {"note": body.confirmation_note, "observation_ref": ref, "after_action_review": body.after_action is not None})
     events.publish("incident", {"incident_id": i.id, "status": "closed"})
     return inc_dict(i)
+
+
+@router.get("/incidents/{incident_id}/sitrep")
+def sitrep(incident_id: str, ident: Identity = Depends(current_identity), db: Session = Depends(get_db)):
+    """Situation report assembled only from persisted state (incident, evidence, proposals, approvals, work
+    orders).  Section layout is adapted from the incident-briefing pattern used in incident command systems
+    (situation, evidence, decisions, resources, open items, operational period, caveats).  Nothing is inferred."""
+    i = db.get(Incident, incident_id)
+    if not i or not ident.in_scope(i.jurisdiction):
+        raise HTTPException(404, "incident not found")
+    ev = db.execute(select(Evidence).where(Evidence.incident_id == i.id)).scalars().all()
+    props = db.execute(select(Proposal).where(Proposal.incident_id == i.id).order_by(Proposal.version)).scalars().all()
+    aps = db.execute(select(Approval).where(Approval.incident_id == i.id)).scalars().all()
+    wos = db.execute(select(WorkOrder).where(WorkOrder.incident_id == i.id).order_by(WorkOrder.created_at)).scalars().all()
+    frs = db.execute(select(FieldReport).where(FieldReport.incident_id == i.id)).scalars().all()
+    runs = db.execute(select(AgentRun).where(AgentRun.incident_id == i.id)).scalars().all()
+    now = utcnow()
+    hyd, hse, util = i.summary.get("hydrology") or {}, i.summary.get("hse") or {}, i.summary.get("utility") or {}
+    latest = props[-1] if props else None
+    open_wos = [w for w in wos if w.status in {"approved", "dispatched", "acknowledged", "in_progress"}]
+    report = {
+        "incident_id": i.id, "version": i.version, "generated_at": iso(now), "generated_at_dubai": to_dubai(now).isoformat(), "generated_by": ident.id,
+        "basis": "persisted state only — no model narration",
+        "operational_period": {"start": iso(i.created_at), "start_dubai": to_dubai(i.created_at).isoformat(), "elapsed_minutes": int((now - i.created_at).total_seconds() // 60),
+                               "status": i.status, "closed_at": iso(i.closed_at)},
+        "situation": {"title": i.title, "title_ar": i.title_ar, "label": i.label, "severity_band": i.severity_band, "consequence_band": i.consequence, "evidence_quality": i.evidence_quality,
+                      "mechanism": hyd.get("mechanism"), "observed_water": hyd.get("observed_water_label"), "forecast_band": hyd.get("forecast_band"),
+                      "anomaly_band": util.get("anomaly_band"), "exposed_assets": i.asset_ids, "emergency_routes_affected": hse.get("routes", []),
+                      "probability_note": "no calibrated model — ordinal bands only"},
+        "evidence": {"items": len(ev), "independent_sources": len({e.independent_source_key for e in ev}), "stale": [e.id for e in ev if e.freshness == "stale"],
+                     "conflicts": [e.id for e in ev if e.conflicts_with], "poor_quality": [e.id for e in ev if e.quality == "poor"],
+                     "field_reports": {"total": len(frs), "accepted": sum(1 for f in frs if f.review_status == "accepted"), "pending": sum(1 for f in frs if f.review_status == "pending"),
+                                       "with_isolated_instructions": sum(1 for f in frs if f.isolated_instructions)},
+                     "persona_failures": sorted({r.persona for r in runs if r.status == "failed"})},
+        "decisions": {"proposals": len(props), "latest_proposal": ({"id": latest.id, "version": latest.version, "status": latest.status, "actions": [a.get("kind") for a in latest.actions],
+                                                                      "payload_hash": latest.payload_hash} if latest else None),
+                      "approvals": [{"decision": a.decision, "status": a.status, "approver_role": a.approver_role, "expires_at": iso(a.expires_at)} for a in aps]},
+        "resources": [{"id": w.id, "kind": w.kind, "department": w.department, "status": w.status, "connector": w.connector, "physical_effect_applied": w.status == "completed" and bool(w.physical_effect),
+                       "escalation_due_at": iso(w.escalation_due_at)} for w in wos],
+        "open_items": ([i.next_decision] if i.status not in {"closed", "cancelled"} else []) + [f"work order {w.id} ({w.kind}) is {w.status}" for w in open_wos]
+                      + [f"field report {f.id} awaiting review" for f in frs if f.review_status == "pending"],
+        "caveats": ["All data synthetic; connectors simulated; advisory drafts require human approval.", "Hazard numbers come from versioned tools labelled 'scenario model — uncalibrated'.",
+                    "Acknowledgement of a work order does not change physical state; only completion does."],
+        "after_action_review": i.summary.get("after_action_review"),
+    }
+    audit.record(db, ident.id, "sitrep.generated", "incident", i.id, {"version": i.version})
+    return report
 
 
 @router.post("/incidents/{incident_id}/cancel")

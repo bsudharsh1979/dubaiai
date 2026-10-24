@@ -14,7 +14,19 @@ imply endorsement by, or an existing integration with, any UAE authority.
 
 ![Key features](docs/infographics/key-features.svg)
 
-Executive summary: [`docs/EXECUTIVE_SUMMARY.md`](docs/EXECUTIVE_SUMMARY.md) · Guardrail layers: [`docs/infographics/guardrails.svg`](docs/infographics/guardrails.svg)
+Executive summary: [`docs/EXECUTIVE_SUMMARY.md`](docs/EXECUTIVE_SUMMARY.md) (also in-app at `/how-it-works`, no sign-in needed) · Guardrail layers: [`docs/infographics/guardrails.svg`](docs/infographics/guardrails.svg) · Practices adapted from international emergency-management processes: [`docs/BEST_PRACTICES.md`](docs/BEST_PRACTICES.md)
+
+### Process refinements adapted from international practice
+
+| Practice | In RainReady |
+|---|---|
+| Common Alerting Protocol (CAP 1.2) fields | Advisory drafts carry urgency / severity / certainty / response type; certainty is mapped from evidence completeness, never a probability; hash-bound with the proposal |
+| Three-tier public warning level | Advice · Watch and Act · Emergency Warning, derived from the hazard band |
+| Flood-risk matrix (likelihood × impact) | Incident header shows the current cell on a 4×4 ordinal matrix |
+| Incident briefing / SITREP (ICS-201 pattern) | One-click situation report from persisted state; copy as text for handover |
+| Joint Decision Model | Workflow graph order: validate → assess → policy → plan → human review → execute → review |
+| After-action review | Optional structured AAR stored at closure, included in the SITREP |
+| Stand-down discipline | Closing an incident stands down open work orders (audited) |
 
 ## What runs now vs. what is simulated vs. what needs external access
 
@@ -54,7 +66,7 @@ cd rainready/web && npm run build
 cd ../api; $env:STATIC_DIR="../web/out"; uv run uvicorn rainready.main:app --port 8100   # http://localhost:8100
 ```
 
-Tests: `cd rainready/api && uv run pytest` (27 tests) · `cd rainready/web && npx playwright test` (3 browser smoke tests against a running server).
+Tests: `cd rainready/api && uv run pytest` (28 tests) · `cd rainready/web && npx playwright test` (4 browser smoke tests against a running server).
 Full run instructions, Compose and Modal: `docs/RUN.md`.
 
 ## Repository layout

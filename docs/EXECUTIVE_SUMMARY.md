@@ -35,7 +35,13 @@ coordination.
    demo → local NIM → approved hosted, never silently.
 9. **Assurance built in** — hash-linked audit chain (tamper-evident), emergency stop, guard-outage rules,
    redacted logs, per-adapter provider status, evaluation harness that says "not evaluated" without labels.
-10. **Bilingual** — English and Arabic (RTL) across six views; works without external tiles or CDNs.
+10. **Bilingual** — English and Arabic (RTL) across all views; works without external tiles or CDNs.
+11. **Process refinements adapted from international practice** (see `BEST_PRACTICES.md`) — CAP-aligned
+    structured alerts with a three-tier message level, a likelihood × consequence risk matrix, one-click ICS-style
+    situation reports from persisted state, after-action review at closure, and stand-down of open work orders
+    when an incident closes.
+
+This summary is also available inside the app at `/how-it-works` (no sign-in required), with live server status.
 
 ![Guardrails](infographics/guardrails.svg)
 
@@ -44,7 +50,7 @@ coordination.
 | Verified | Not yet |
 |---|---|
 | Full rainfall workflow end-to-end; leak and HSE branches; four scenarios with different outcomes | Real model inference (hosted credential rejected with 401; local NIM unavailable) — path implemented, reports "not exercised" |
-| 27 API tests, 3 browser smoke tests, passing locally and on the hosted URL | PostGIS Compose stack (written, not run here) |
+| 28 API tests, 4 browser smoke tests, passing locally and on the hosted URL | PostGIS Compose stack (written, not run here) |
 | Deployed on Modal with guardrails on: https://gamgn--rainready-uae-server-web.us-east.modal.run | Guard, embedding, vision and EO-encoder adapters (implemented, not exercised) |
 | Sentinel-1 import validation on synthetic GeoTIFFs | Any predictive accuracy — **not evaluated**; no labelled UAE data |
 

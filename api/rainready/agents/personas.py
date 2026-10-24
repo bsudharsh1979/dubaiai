@@ -80,6 +80,26 @@ class PlannerOut(BaseModel):
     competing_incidents: int = 0
 
 
+class StructuredAlert(BaseModel):
+    """Common Alerting Protocol (OASIS CAP 1.2) aligned fields for the public advisory draft.
+
+    Values are mapped deterministically from ordinal bands and evidence completeness — never from a
+    probability.  `message_level` follows the three-tier public warning pattern used by several national
+    warning systems (advice / watch and act / emergency warning).  This is a draft for human approval."""
+    standard: str = "CAP-1.2-aligned (demonstration draft)"
+    event: str
+    urgency: str = Field(..., pattern="^(Immediate|Expected|Future|Past|Unknown)$")
+    severity: str = Field(..., pattern="^(Extreme|Severe|Moderate|Minor|Unknown)$")
+    certainty: str = Field(..., pattern="^(Observed|Likely|Possible|Unlikely|Unknown)$")
+    certainty_basis: str = "mapped from evidence completeness band, not a probability"
+    response_type: str = Field(..., pattern="^(Shelter|Evacuate|Prepare|Execute|Avoid|Monitor|AllClear|None)$")
+    message_level: str = Field(..., pattern="^(Advice|Watch and Act|Emergency Warning)$")
+    instruction_en: str
+    instruction_ar: str
+    expires_minutes: int = 180
+    sender: str = "RainReady demonstration — not an official warning authority"
+
+
 class CommsOut(BaseModel):
     text_en: str
     text_ar: str
@@ -87,6 +107,29 @@ class CommsOut(BaseModel):
     recipients: list[str] = Field(default_factory=list)
     redactions: list[str] = Field(default_factory=list)
     citations: list[str] = Field(default_factory=list)
+    alert: StructuredAlert | None = None
+
+
+def structured_alert(label: str, band: str | None, independent_sources: int, stale: bool, conflicts: bool, window_start: str, loc: str) -> StructuredAlert:
+    sev = {"severe": "Extreme", "high": "Severe", "moderate": "Moderate", "low": "Minor"}.get(band or "", "Unknown")
+    if label in {"observed_water", "confirmed_incident"}:
+        cert = "Observed"
+    elif band in {None, "unknown"} or independent_sources == 0:
+        cert = "Unknown"
+    elif independent_sources >= 2 and not stale and not conflicts:
+        cert = "Likely"
+    else:
+        cert = "Possible"
+    urgency = "Immediate" if window_start in {"now", "0"} or label in {"observed_water", "confirmed_incident"} else "Expected"
+    level = {"severe": "Emergency Warning", "high": "Watch and Act"}.get(band or "", "Advice")
+    if level == "Emergency Warning":
+        resp, ins_en, ins_ar = "Avoid", f"Do not enter {loc}. Move to higher ground if water is rising. Follow directions from authorities.", f"لا تدخل {loc}. انتقل إلى مكان مرتفع إذا كانت المياه ترتفع. اتبع تعليمات الجهات المختصة."
+    elif level == "Watch and Act":
+        resp, ins_en, ins_ar = "Prepare", f"Avoid {loc}; plan alternative routes and be ready to act on further advice.", f"تجنّب {loc}؛ خطط لمسارات بديلة وكن مستعداً للتصرّف وفق أي تحديث."
+    else:
+        resp, ins_en, ins_ar = "Monitor", f"Stay informed; surface water may accumulate near {loc}.", f"ابقَ على اطلاع؛ قد تتجمع المياه السطحية قرب {loc}."
+    return StructuredAlert(event=f"{label.replace('_', ' ')} — surface water", urgency=urgency, severity=sev, certainty=cert, response_type=resp, message_level=level,
+                           instruction_en=ins_en, instruction_ar=ins_ar)
 
 
 class AssuranceOut(BaseModel):
@@ -295,7 +338,7 @@ def planner_policy(ctx: ToolContext, st: dict) -> PlannerOut:
 
 def comms_policy(ctx: ToolContext, st: dict) -> CommsOut:
     proc = _safe(ctx, "retrieve_procedure", {"query": "waterlogging advisory template area window", "collection": "comms", "k": 3})
-    _safe(ctx, "evidence_summary", {})
+    ev = _safe(ctx, "evidence_summary", {})
     inc = st.get("incident") or {}
     hyd = st.get("hydrologist") or {}
     label = inc.get("label", "forecast_risk").replace("_", " ")
@@ -306,8 +349,10 @@ def comms_policy(ctx: ToolContext, st: dict) -> CommsOut:
     en = f"{area}: {label} of waterlogging. Surface water may accumulate between {w0} and {w1} (Asia/Dubai). Avoid the underpass at {loc} and follow directions from authorities. This message is based on forecast scenario modelling and will be updated."
     ar = f"{area}: {label_ar} لتجمّع المياه. قد تتجمع المياه السطحية بين {w0} و{w1} (توقيت دبي). تجنّب النفق في {loc} واتبع تعليمات الجهات المختصة. تستند هذه الرسالة إلى نمذجة سيناريو توقّعية وسيتم تحديثها."
     red = [a["asset_id"] for a in (st.get("hse") or {}).get("exposed_assets", []) if a.get("sensitive")]
+    alert = structured_alert(inc.get("label", "forecast_risk"), hyd.get("forecast_band") or inc.get("severity_band"), int(ev.get("independent_sources", 0) or 0),
+                             bool(ev.get("stale")), bool(ev.get("conflicts")), str(w0), loc)
     return CommsOut(text_en=en, text_ar=ar, recipients=["public-advisory-channel (simulated)", "transport-control-desk (simulated)"], redactions=red,
-                    citations=[h["citation"] for h in proc.get("hits", [])])
+                    citations=[h["citation"] for h in proc.get("hits", [])], alert=alert)
 
 
 def assurance_policy(ctx: ToolContext, st: dict) -> AssuranceOut:

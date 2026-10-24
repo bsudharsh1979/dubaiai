@@ -128,6 +128,48 @@ def test_closure_requires_new_observation_and_commander(client):
     assert r.status_code == 200 and r.json()["status"] == "closed"
 
 
+# --- process refinements: CAP-aligned alert, SITREP, after-action review -------
+def test_structured_alert_sitrep_and_after_action_review(client):
+    _cancel_all(client)
+    login(client, "u_drain")
+    inc_id = client.post("/api/scenarios/SC-A-rainfall/run", json={}).json()["incident_id"]
+    inc = client.get(f"/api/incidents/{inc_id}").json()
+    prop = inc["proposals"][-1]
+    adv = next(a for a in prop["actions"] if a["kind"] == "advisory")
+    alert = adv["alert"]
+    # CAP-aligned fields are present, mapped from bands (no probability), and inside the hashed payload
+    assert alert["severity"] in {"Extreme", "Severe", "Moderate", "Minor", "Unknown"}
+    assert alert["certainty"] in {"Observed", "Likely", "Possible", "Unknown"} and "not a probability" in alert["certainty_basis"]
+    assert alert["message_level"] in {"Advice", "Watch and Act", "Emergency Warning"}
+    assert alert["instruction_en"] and alert["instruction_ar"] and "not an official" in alert["sender"]
+    assert inc["severity_band"] in {"high", "severe"} and alert["message_level"] in {"Watch and Act", "Emergency Warning"}
+    # SITREP is built from persisted state only
+    sr = client.get(f"/api/incidents/{inc_id}/sitrep").json()
+    assert sr["basis"].startswith("persisted state") and sr["situation"]["label"] == inc["label"]
+    assert sr["decisions"]["latest_proposal"]["payload_hash"] == prop["payload_hash"]
+    assert sr["evidence"]["independent_sources"] == inc["independent_sources"]
+    assert any("approval" in o for o in sr["open_items"])
+    assert sr["after_action_review"] is None
+    # closure with an after-action review stores it on the incident
+    login(client, "u_cmd")
+    client.post("/api/approvals", json={"proposal_id": prop["id"], "decision": "approved"}, headers={"Idempotency-Key": "aar-" + inc_id})
+    drain()
+    login(client, "u_field")
+    fr = client.post("/api/field-reports", data={"description": "Underpass dry, inlets clear.", "lat": 25.19, "lon": 55.31, "capture_time": "2026-10-24T06:00:00+00:00", "incident_id": inc_id}).json()
+    login(client, "u_hse")
+    client.post(f"/api/field-reports/{fr['id']}/review", json={"review_status": "accepted", "reliability": "corroborated"})
+    drain()
+    login(client, "u_cmd")
+    r = client.post(f"/api/incidents/{inc_id}/close", json={"confirmation_note": "Closed after verification", "new_observation_ref": fr["id"],
+                                                          "after_action": {"what_was_expected": "waterlogging at U-7", "what_happened": "pump deployed, water receded", "went_well": "fast ack",
+                                                                           "improve": "earlier inlet inspection", "follow_ups": ["inspect DI-7A grate"]}})
+    assert r.status_code == 200, r.text
+    aar = r.json()["summary"]["after_action_review"]
+    assert aar["follow_ups"] == ["inspect DI-7A grate"] and aar["recorded_by"] == "u_cmd"
+    sr = client.get(f"/api/incidents/{inc_id}/sitrep").json()
+    assert sr["after_action_review"]["improve"] == "earlier inlet inspection" and sr["open_items"] == []
+
+
 # --- hazard tools --------------------------------------------------------------
 def test_mass_balance_and_units():
     specs = [hydrology.CatchmentSpec("up", "up", 1_000_000, 0.6, 10_000, 0.3, downstream_id="low", travel_minutes=20, mechanism="flash_flood"),

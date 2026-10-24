@@ -91,6 +91,39 @@ export type Action = {
   route: { nodes?: string[]; status?: string; label?: string; geometry?: GeoJSON.Geometry } | null;
   requires_authority: string;
   physical_effect: Record<string, unknown>;
+  alert?: StructuredAlert | null;
+};
+
+export type StructuredAlert = {
+  standard: string;
+  event: string;
+  urgency: string;
+  severity: string;
+  certainty: string;
+  certainty_basis: string;
+  response_type: string;
+  message_level: string;
+  instruction_en: string;
+  instruction_ar: string;
+  expires_minutes: number;
+  sender: string;
+};
+
+export type Sitrep = {
+  incident_id: string;
+  version: number;
+  generated_at: string;
+  generated_at_dubai: string;
+  generated_by: string;
+  basis: string;
+  operational_period: { start: string; start_dubai: string; elapsed_minutes: number; status: string; closed_at: string | null };
+  situation: Record<string, unknown>;
+  evidence: { items: number; independent_sources: number; stale: string[]; conflicts: string[]; poor_quality: string[]; field_reports: Record<string, number>; persona_failures: string[] };
+  decisions: { proposals: number; latest_proposal: { id: string; version: number; status: string; actions: string[]; payload_hash: string } | null; approvals: { decision: string; status: string; approver_role: string; expires_at: string | null }[] };
+  resources: { id: string; kind: string; department: string; status: string; connector: string; physical_effect_applied: boolean; escalation_due_at: string | null }[];
+  open_items: string[];
+  caveats: string[];
+  after_action_review: Record<string, unknown> | null;
 };
 
 export type Proposal = {

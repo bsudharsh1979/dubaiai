@@ -31,8 +31,8 @@ human.
 ## What is real in this submission
 
 * A runnable prototype (local and hosted) covering the full rainfall workflow, leak and HSE extensions, four
-  scenarios with different outcomes, a what-if twin, Sentinel-1 import validation, EN/AR UI, 27 API tests and a
-  3-scenario browser smoke test.
+  scenarios with different outcomes, a what-if twin, Sentinel-1 import validation, EN/AR UI, 28 API tests and a
+  4-scenario browser smoke test.
 * Guardrails implemented in code and tested: RBAC from signed identity, bound approvals, idempotency, tool
   allowlists, instruction/observation separation, read-only tools, upload validation, redacted audit, hash-linked
   audit chain, emergency stop, guard-outage behaviour, casualty preservation, no future-information leakage.

@@ -36,14 +36,23 @@ Status legend: `[x]` done and verified locally · `[~]` implemented, partially v
 - [x] Sentinel-1 before/after GeoTIFF import with CRS/overlap/alignment/units/nodata validation
 
 ## Stage 6 — verification and demo
-- [x] Automated checks: 27 pytest (API, guardrails, tools) — see `docs/TEST_RESULTS.md`
-- [x] Browser smoke test: 3 Playwright tests (principal demo end-to-end, malicious report isolation, Arabic RTL), passing locally and against the hosted URL
+- [x] Automated checks: 28 pytest (API, guardrails, tools) — see `docs/TEST_RESULTS.md`
+- [x] Browser smoke test: 4 Playwright tests (principal demo end-to-end, malicious report isolation, Arabic RTL), passing locally and against the hosted URL
 - [x] Modal deployment (`deploy/modal_app.py`) — https://gamgn--rainready-uae-server-web.us-east.modal.run ; SQLite on a Volume, single container, embedded worker, hosted env flags
 - [x] Deliverables: `.env.example`, Dockerfiles, `docker-compose.yml`, pinned lockfiles (`uv.lock`, `requirements.lock.txt`, `package-lock.json`), README, ARCHITECTURE, RUN, MODEL_CARDS, THREAT_MODEL, DATA_ACCESS, TEST_RESULTS, DEMO_SCRIPT, NARRATIVE, MODEL_RUNS
 - [!] Competition gate — **not passed**: served-model discovery OK, chat completions **401 Unauthorized** with the stored `nvidia-api-key`; no persona has been executed by a real model. Path is implemented and reports its status truthfully. See `docs/MODEL_RUNS.md`
 - [!] Docker Compose / PostGIS stack written but **not executed** (Docker unavailable here)
 - [!] Guard-model, embedding, vision and EO-encoder adapters implemented but **not exercised** (no endpoints)
 - [!] Every predictive metric: **not evaluated** (no labelled UAE flood/leak/forecast data)
+
+## Stage 7 — executive summary page and process refinements
+- [x] In-app `/how-it-works` executive summary (EN/AR, readable without sign-in, live server status from `/api/health`, locally served infographics)
+- [x] CAP-aligned structured alert on advisory drafts (urgency/severity/certainty/response/message level mapped from bands; hash-bound; "not a probability")
+- [x] Likelihood × consequence risk matrix on the incident header (ordinal)
+- [x] SITREP endpoint and panel from persisted state (ICS-201-style sections; copy as text; audited)
+- [x] After-action review captured at closure; open work orders stood down at closure (audited)
+- [x] Demo reset robust on Windows (locked SQLite → drop-all fallback)
+- [ ] Pre-agreed action timelines (candidate; needs real forecasts and agency agreement) — see `docs/BEST_PRACTICES.md`
 
 ## Definition of done — status
 - [x] Fresh checkout runs the no-key demo (`docs/RUN.md` §1–2)

@@ -43,6 +43,30 @@ def startup() -> dict:
     return info
 
 
+def _wipe_sqlite(path: str) -> None:
+    """Remove a SQLite database file; if the OS refuses because another thread still holds it open
+    (Windows), fall back to dropping every table so the schema is recreated by the migration."""
+    import sqlite3
+    try:
+        Path(path).unlink()
+    except FileNotFoundError:
+        pass
+    except PermissionError:
+        con = sqlite3.connect(path)
+        try:
+            names = [r[0] for r in con.execute("SELECT name FROM sqlite_master WHERE type IN ('table','view') AND name NOT LIKE 'sqlite_%'")]
+            for n in names:
+                con.execute(f'DROP TABLE IF EXISTS "{n}"')
+            con.commit()
+        finally:
+            con.close()
+    for side in ("-wal", "-shm"):
+        try:
+            Path(path + side).unlink()
+        except (FileNotFoundError, PermissionError):
+            pass
+
+
 def reset_database() -> None:
     """Demo-only: drop everything (including graph checkpoints) and re-seed."""
     from .agents import runner
@@ -52,11 +76,8 @@ def reset_database() -> None:
     reset_engine()
     if s.is_sqlite:
         path = s.database_url.replace("sqlite:///", "")
-        for p in (path, path + "-wal", path + "-shm", checkpoint_db_path(), checkpoint_db_path() + "-wal", checkpoint_db_path() + "-shm"):
-            try:
-                Path(p).unlink()
-            except FileNotFoundError:
-                pass
+        for p in (path, checkpoint_db_path()):
+            _wipe_sqlite(p)
     else:
         from sqlalchemy import text
         eng = get_engine()
